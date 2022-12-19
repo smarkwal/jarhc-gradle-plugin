@@ -32,8 +32,9 @@ dependencies {
     // JarHC 2.1.0
     implementation("org.jarhc:jarhc:2.1.0")
 
-    // JUnit 5
+    // JUnit 5 and Mockito
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
+    testImplementation("org.mockito:mockito-junit-jupiter:4.10.0")
 }
 
 gradlePlugin {

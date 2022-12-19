@@ -110,7 +110,8 @@ public abstract class JarhcReportTask extends DefaultTask {
 
 	}
 
-	private Options createOptions(Project project, Logger logger) {
+	// visible for testing
+	Options createOptions(Project project, Logger logger) {
 
 		Options options = new Options();
 
@@ -199,9 +200,11 @@ public abstract class JarhcReportTask extends DefaultTask {
 			throw new GradleException("No data path specified.");
 		}
 
-		String reportTitle = getReportTitle().get();
-		logger.info("Report title: {}", reportTitle);
-		options.setReportTitle(reportTitle);
+		if (getReportTitle().isPresent()) {
+			String reportTitle = getReportTitle().get();
+			logger.info("Report title: {}", reportTitle);
+			options.setReportTitle(reportTitle);
+		}
 
 		ConfigurableFileCollection reportFiles = getReportFiles();
 		if (reportFiles != null && !reportFiles.isEmpty()) {
@@ -215,7 +218,8 @@ public abstract class JarhcReportTask extends DefaultTask {
 		return options;
 	}
 
-	private static int runJarHC(Options options, Logger logger) {
+	// visible for testing
+	int runJarHC(Options options, Logger logger) {
 
 		String dataPath = options.getDataPath();
 		if (dataPath == null) throw new GradleException("Data path is not set");
