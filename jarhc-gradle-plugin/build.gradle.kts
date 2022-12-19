@@ -20,6 +20,13 @@ plugins {
     signing
     `maven-publish`
 
+    // Gradle Publish plugin
+    // https://plugins.gradle.org/docs/publish-plugin
+    id("com.gradle.plugin-publish") version "1.1.0"
+
+    // Gradle Shadow plugin
+    // TODO: id("com.github.johnrengelman.shadow") version "7.1.2"
+
     // run Sonar analysis
     id("org.sonarqube") version "3.5.0.2730"
 
@@ -38,9 +45,18 @@ dependencies {
 }
 
 gradlePlugin {
-    val jarhcPlugin by plugins.creating {
-        id = "org.jarhc"
-        implementationClass = "org.jarhc.gradle.JarhcGradlePlugin"
+
+    @Suppress("UnstableApiUsage")
+    plugins {
+        website.set("https://github.com/smarkwal/jarhc-gradle-plugin")
+        vcsUrl.set("https://github.com/smarkwal/jarhc-gradle-plugin.git")
+        create("jarhcPlugin") {
+            id = "org.jarhc"
+            displayName = "JarHC Gradle Plugin"
+            description = "Gradle plugin to generate JarHC reports."
+            tags.set(listOf("jarhc", "java", "classpath", "dependencies"))
+            implementationClass = "org.jarhc.gradle.JarhcGradlePlugin"
+        }
     }
 }
 
@@ -72,6 +88,17 @@ idea {
         testResources.from("src/functionalTest/resources")
     }
 }
+
+// build -----------------------------------------------------------------------
+
+// TODO: add configuration for shadow plugin
+// tasks.jar {
+//     archiveClassifier.set("default")
+// }
+//
+// tasks.shadowJar {
+//     archiveClassifier.set("")
+// }
 
 // tests -----------------------------------------------------------------------
 
@@ -205,60 +232,6 @@ tasks.sonar {
         tasks.jacocoTestReport
     )
 }
-
-// publish to Maven Central ----------------------------------------------------
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-
-            from(components["java"])
-
-            pom {
-
-                name.set("JarHC Gradle Plugin")
-                description.set("Gradle plugin to generate JarHC reports.")
-                url.set("https://github.com/smarkwal/jarhc-gradle-plugin")
-
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-
-                developers {
-                    developer {
-                        id.set("smarkwal")
-                        name.set("Stephan Markwalder")
-                        email.set("stephan@markwalder.net")
-                        url.set("https://github.com/smarkwal")
-                    }
-                }
-
-                scm {
-                    connection.set("scm:git:git://github.com/smarkwal/jarhc-gradle-plugin.git")
-                    developerConnection.set("scm:git:ssh://github.com/smarkwal/jarhc-gradle-plugin.git")
-                    url.set("https://github.com/smarkwal/jarhc-gradle-plugin")
-                }
-
-            }
-        }
-    }
-}
-
-signing {
-    sign(publishing.publications["maven"])
-}
-
-// disable generation of Gradle module metadata file
-tasks.withType<GenerateModuleMetadata> {
-    enabled = false
-}
-
-// publish to Gradle Plugin Portal ---------------------------------------------
-
-// TODO: publish to Gradle Plugin Portal
 
 // helper functions ------------------------------------------------------------
 
