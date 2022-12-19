@@ -15,4 +15,4 @@
  */
 
 rootProject.name = "jarhc-gradle-plugin"
-include("plugin")
+include("jarhc-gradle-plugin")
