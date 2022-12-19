@@ -16,6 +16,7 @@
 import java.util.*
 
 plugins {
+    idea
 
     // publish to Sonatype OSSRH and release to Maven Central
     id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
@@ -53,6 +54,19 @@ allprojects {
         mavenCentral()
     }
 
+}
+
+subprojects {
+    apply(plugin = "idea")
+}
+
+// special settings for IntelliJ IDEA
+idea {
+    project {
+        jdkName = "11"
+        languageLevel = org.gradle.plugins.ide.idea.model.IdeaLanguageLevel(JavaVersion.VERSION_11)
+        vcs = "Git"
+    }
 }
 
 nexusPublishing {

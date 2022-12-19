@@ -65,6 +65,14 @@ java {
     withJavadocJar()
 }
 
+// special settings for IntelliJ IDEA
+idea {
+    module {
+        testSources.from("src/functionalTest/java")
+        testResources.from("src/functionalTest/resources")
+    }
+}
+
 // tests -----------------------------------------------------------------------
 
 // source set for the functional test suite
