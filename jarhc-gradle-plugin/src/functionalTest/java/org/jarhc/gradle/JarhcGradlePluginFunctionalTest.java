@@ -20,7 +20,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
 import org.junit.jupiter.api.Test;
@@ -32,38 +37,52 @@ class JarhcGradlePluginFunctionalTest {
 	File projectDir;
 
 	private File getBuildFile() {
-		return new File(projectDir, "build.gradle");
+		return new File(projectDir, "build.gradle.kts");
 	}
 
 	private File getSettingsFile() {
-		return new File(projectDir, "settings.gradle");
+		return new File(projectDir, "settings.gradle.kts");
 	}
 
 	@Test
 	void canRunTask() throws IOException {
 
 		// prepare
-		writeString(getSettingsFile(), "");
-		writeString(getBuildFile(),
-				"plugins {" +
-						"  id('org.jarhc')" +
-						"}");
+		writeTextFile(getSettingsFile(), readTextResource("settings.gradle.kts"));
+		writeTextFile(getBuildFile(), readTextResource("build.gradle.kts"));
+		Path expectedDataPath = projectDir.toPath().resolve("jarhc-data");
+		Path expectedHtmlReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.html");
+		Path expectedTextReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.txt");
+		String expectedOutput = readTextResource("output.txt");
 
 		// test
 		GradleRunner runner = GradleRunner.create();
 		runner.forwardOutput();
 		runner.withPluginClasspath();
-		runner.withArguments("jarhcReport");
+		runner.withArguments("jarhcReport", "--stacktrace");
 		runner.withProjectDir(projectDir);
 		BuildResult result = runner.build();
 
 		// assert
-		assertTrue(result.getOutput().contains("Hello from plugin 'org.jarhc'"));
+		String output = result.getOutput();
+		assertTrue(output.contains(expectedOutput));
+		assertTrue(Files.isDirectory(expectedDataPath));
+		assertTrue(Files.isRegularFile(expectedHtmlReportPath));
+		assertTrue(Files.isRegularFile(expectedTextReportPath));
+
+		System.out.println(Files.readString(expectedTextReportPath));
 	}
 
-	private void writeString(File file, String string) throws IOException {
-		try (Writer writer = new FileWriter(file)) {
-			writer.write(string);
+	private String readTextResource(String resource) throws IOException {
+		try (InputStream stream = this.getClass().getClassLoader().getResourceAsStream(resource)) {
+			if (stream == null) throw new IOException("Resource not found: " + resource);
+			return IOUtils.toString(stream, StandardCharsets.UTF_8);
+		}
+	}
+
+	private void writeTextFile(File file, String text) throws IOException {
+		try (Writer writer = new FileWriter(file, StandardCharsets.UTF_8)) {
+			writer.write(text);
 		}
 	}
 

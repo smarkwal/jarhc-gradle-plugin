@@ -26,6 +26,17 @@ plugins {
 
 }
 
+tasks {
+
+    // add a custom "clean" task to root project
+    register("clean") {
+        group = "build"
+        doLast {
+            delete("${rootDir}/build")
+        }
+    }
+}
+
 allprojects {
 
     // load user-specific properties -------------------------------------------

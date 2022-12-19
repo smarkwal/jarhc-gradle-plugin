@@ -28,6 +28,11 @@ plugins {
 }
 
 dependencies {
+
+    // JarHC 2.1.0
+    implementation("org.jarhc:jarhc:2.1.0")
+
+    // JUnit 5
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
 }
 
