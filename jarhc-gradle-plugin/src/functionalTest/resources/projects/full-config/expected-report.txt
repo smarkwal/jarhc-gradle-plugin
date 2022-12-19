@@ -1,0 +1,108 @@
+ASM 9.4
+=======
+
+JAR Files
+---------
+List of JAR files found in classpath.
+
+JAR file         | Size    | Classes | Resources | Checksum (SHA-1)                         | Artifact coordinates
+-----------------+---------+---------+-----------+------------------------------------------+-----------------------------
+asm-commons.jar  | 71.1 KB | 27      | 0         | 8fc2810ddbcbbec0a8bbccb3f8eda58321839912 | org.ow2.asm:asm-commons:9.4
+asm-util.jar     | 89.4 KB | 26      | 0         | ab1e0a84b72561dbaf1ee260321e72148ebf4b19 | org.ow2.asm:asm-util:9.4
+asm-analysis.jar | 33.5 KB | 14      | 0         | 0a5fec9dfc039448d4fd098fbaffcaf55373b223 | org.ow2.asm:asm-analysis:9.4
+asm-tree.jar     | 51.4 KB | 38      | 0         | a99175a17d7fdc18cbcbd0e8ea6a5d276844190a | org.ow2.asm:asm-tree:9.4
+asm.jar          | 120 KB  | 37      | 0         | b4e0e2d2e023aa317b7cfcfc916377ea348e07d1 | org.ow2.asm:asm:9.4
+Classpath        | 365 KB  | 142     | 0         | -                                        | -
+
+Modules
+-------
+List of Java Modules found in classpath.
+
+JAR file         | Module name                     | Definition  | Automatic | Requires                        | Exports
+-----------------+---------------------------------+-------------+-----------+---------------------------------+--------------------------------
+asm-commons.jar  | org.objectweb.asm.commons       | Module-Info | No        | org.objectweb.asm               | org.objectweb.asm.commons
+                 |                                 |             |           | org.objectweb.asm.tree          |
+                 |                                 |             |           | java.base                       |
+asm-util.jar     | org.objectweb.asm.util          | Module-Info | No        | org.objectweb.asm               | org.objectweb.asm.util
+                 |                                 |             |           | org.objectweb.asm.tree          |
+                 |                                 |             |           | org.objectweb.asm.tree.analysis |
+                 |                                 |             |           | java.base                       |
+asm-analysis.jar | org.objectweb.asm.tree.analysis | Module-Info | No        | org.objectweb.asm               | org.objectweb.asm.tree.analysis
+                 |                                 |             |           | org.objectweb.asm.tree          |
+                 |                                 |             |           | java.base                       |
+asm-tree.jar     | org.objectweb.asm.tree          | Module-Info | No        | org.objectweb.asm               | org.objectweb.asm.tree
+                 |                                 |             |           | java.base                       |
+asm.jar          | org.objectweb.asm               | Module-Info | No        | java.base                       | org.objectweb.asm
+                 |                                 |             |           |                                 | org.objectweb.asm.signature
+
+Class Versions
+--------------
+Java class file format information.
+
+JAR file         | Multi-release | Class files by Java version
+-----------------+---------------+----------------------------
+asm-commons.jar  | No            | Java 5 (27)
+asm-util.jar     | No            | Java 5 (26)
+asm-analysis.jar | No            | Java 5 (14)
+asm-tree.jar     | No            | Java 5 (38)
+asm.jar          | No            | Java 5 (37)
+Classpath        | -             | Java 5 (142)
+
+JAR Dependencies
+----------------
+Dependencies between JAR files.
+
+JAR file         | Uses             | Used by
+-----------------+------------------+-----------------
+asm-commons.jar  | asm-tree.jar     | [none]
+                 | asm.jar          |
+asm-util.jar     | asm-analysis.jar | [none]
+                 | asm-tree.jar     |
+                 | asm.jar          |
+asm-analysis.jar | asm-tree.jar     | asm-util.jar
+                 | asm.jar          |
+asm-tree.jar     | asm.jar          | asm-analysis.jar
+                 |                  | asm-commons.jar
+                 |                  | asm-util.jar
+asm.jar          | [none]           | asm-analysis.jar
+                 |                  | asm-commons.jar
+                 |                  | asm-tree.jar
+                 |                  | asm-util.jar
+
+Dependencies
+------------
+Dependencies as declared in POM file.
+
+JAR file         | Maven coordinates            | Direct dependencies          | Status
+-----------------+------------------------------+------------------------------+-------
+asm-commons.jar  | org.ow2.asm:asm-commons:9.4  | org.ow2.asm:asm:9.4          | OK
+                 |                              | org.ow2.asm:asm-tree:9.4     | OK
+asm-util.jar     | org.ow2.asm:asm-util:9.4     | org.ow2.asm:asm:9.4          | OK
+                 |                              | org.ow2.asm:asm-tree:9.4     | OK
+                 |                              | org.ow2.asm:asm-analysis:9.4 | OK
+asm-analysis.jar | org.ow2.asm:asm-analysis:9.4 | org.ow2.asm:asm-tree:9.4     | OK
+asm-tree.jar     | org.ow2.asm:asm-tree:9.4     | org.ow2.asm:asm:9.4          | OK
+asm.jar          | org.ow2.asm:asm:9.4          | [none]                       |
+
+Packages
+--------
+List of packages per JAR file.
+
+JAR file         | Count | Packages                        | Issues
+-----------------+-------+---------------------------------+-------
+asm-analysis.jar | 1     | org.objectweb.asm.tree.analysis |
+asm-commons.jar  | 1     | org.objectweb.asm.commons       |
+asm-tree.jar     | 1     | org.objectweb.asm.tree          |
+asm-util.jar     | 1     | org.objectweb.asm.util          |
+asm.jar          | 2     | org.objectweb.asm               |
+                 |       | org.objectweb.asm.signature     |
+
+Blacklist
+---------
+Use of dangerous, unsafe, unstable, or deprecated classes and methods.
+
+JAR file        | Issues
+----------------+-----------------------------------------------------------------------------------------------------------------------------------
+asm-commons.jar | org.objectweb.asm.commons.InstructionAdapter
+                | • @Deprecated: public void org.objectweb.asm.MethodVisitor.visitMethodInsn(int,java.lang.String,java.lang.String,java.lang.String)
+

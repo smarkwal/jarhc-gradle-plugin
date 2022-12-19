@@ -15,9 +15,13 @@
  */
 package org.jarhc.gradle;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.gradle.api.Project;
+import org.gradle.api.Task;
+import org.gradle.api.tasks.TaskContainer;
 import org.gradle.testfixtures.ProjectBuilder;
 import org.junit.jupiter.api.Test;
 
@@ -33,7 +37,13 @@ class JarhcGradlePluginTest {
 		project.getPlugins().apply("org.jarhc");
 
 		// assert
-		assertNotNull(project.getTasks().findByName("jarhcReport"));
+		TaskContainer tasks = project.getTasks();
+		Task task = tasks.findByName("jarhcReport");
+		assertNotNull(task);
+		assertTrue(task instanceof JarhcReportTask);
+		assertEquals("verification", task.getGroup());
+		assertEquals("Generates a JarHC report.", task.getDescription());
+		assertTrue(task.getDependsOn().isEmpty());
 	}
 
 }

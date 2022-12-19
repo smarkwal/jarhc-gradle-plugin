@@ -15,6 +15,7 @@
  */
 package org.jarhc.gradle;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -31,6 +32,7 @@ import org.gradle.testkit.runner.GradleRunner;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+@SuppressWarnings("DuplicatedCode")
 class JarhcGradlePluginFunctionalTest {
 
 	@TempDir
@@ -45,23 +47,20 @@ class JarhcGradlePluginFunctionalTest {
 	}
 
 	@Test
-	void canRunTask() throws IOException {
+	void canRunTask_withDefaultConfig() throws IOException {
 
 		// prepare
-		writeTextFile(getSettingsFile(), readTextResource("settings.gradle.kts"));
-		writeTextFile(getBuildFile(), readTextResource("build.gradle.kts"));
-		Path expectedDataPath = projectDir.toPath().resolve("jarhc-data");
-		Path expectedHtmlReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.html");
-		Path expectedTextReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.txt");
-		String expectedOutput = readTextResource("output.txt");
+		String projectPath = "projects/default-config";
+		writeTextFile(getSettingsFile(), readTextResource(projectPath + "/settings.gradle.kts"));
+		writeTextFile(getBuildFile(), readTextResource(projectPath + "/build.gradle.kts"));
+		Path expectedDataPath = projectDir.toPath().resolve("build/jarhc-data");
+		Path expectedHtmlReportPath = projectDir.toPath().resolve("build/reports/jarhc/jarhc-report.html");
+		Path expectedTextReportPath = projectDir.toPath().resolve("build/reports/jarhc/jarhc-report.txt");
+		String expectedOutput = readTextResource(projectPath + "/expected-output.txt");
+		String expectedTextReport = readTextResource(projectPath + "/expected-report.txt");
 
 		// test
-		GradleRunner runner = GradleRunner.create();
-		runner.forwardOutput();
-		runner.withPluginClasspath();
-		runner.withArguments("jarhcReport", "--stacktrace");
-		runner.withProjectDir(projectDir);
-		BuildResult result = runner.build();
+		BuildResult result = runTask();
 
 		// assert
 		String output = result.getOutput();
@@ -70,7 +69,49 @@ class JarhcGradlePluginFunctionalTest {
 		assertTrue(Files.isRegularFile(expectedHtmlReportPath));
 		assertTrue(Files.isRegularFile(expectedTextReportPath));
 
-		System.out.println(Files.readString(expectedTextReportPath));
+		String textReport = Files.readString(expectedTextReportPath);
+		if (textReport.contains("Java Runtime")) { // remove section "Java Runtime"
+			textReport = textReport.substring(0, textReport.indexOf("Java Runtime"));
+		}
+		assertEquals(expectedTextReport, textReport);
+		System.out.println(textReport);
+	}
+
+	@Test
+	void canRunTask_withFullConfig() throws IOException {
+
+		// prepare
+		String projectPath = "projects/full-config";
+		writeTextFile(getSettingsFile(), readTextResource(projectPath + "/settings.gradle.kts"));
+		writeTextFile(getBuildFile(), readTextResource(projectPath + "/build.gradle.kts"));
+		Path expectedDataPath = projectDir.toPath().resolve("jarhc-data");
+		Path expectedHtmlReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.html");
+		Path expectedTextReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.txt");
+		String expectedOutput = readTextResource(projectPath + "/expected-output.txt");
+		String expectedTextReport = readTextResource(projectPath + "/expected-report.txt");
+
+		// test
+		BuildResult result = runTask();
+
+		// assert
+		String output = result.getOutput();
+		assertTrue(output.contains(expectedOutput));
+		assertTrue(Files.isDirectory(expectedDataPath));
+		assertTrue(Files.isRegularFile(expectedHtmlReportPath));
+		assertTrue(Files.isRegularFile(expectedTextReportPath));
+
+		String textReport = Files.readString(expectedTextReportPath);
+		assertEquals(expectedTextReport, textReport);
+		System.out.println(textReport);
+	}
+
+	private BuildResult runTask() {
+		GradleRunner runner = GradleRunner.create();
+		runner.forwardOutput();
+		runner.withPluginClasspath();
+		runner.withArguments("jarhcReport", "--stacktrace"); // "--info"
+		runner.withProjectDir(projectDir);
+		return runner.build();
 	}
 
 	private String readTextResource(String resource) throws IOException {

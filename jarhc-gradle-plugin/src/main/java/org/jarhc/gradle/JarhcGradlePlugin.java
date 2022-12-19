@@ -17,18 +17,14 @@ package org.jarhc.gradle;
 
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
-import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
-import org.gradle.api.file.FileCollection;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
 
 public class JarhcGradlePlugin implements Plugin<Project> {
 
 	public void apply(Project project) {
-
-		// TODO: apply JavaPlugin? or test whether it is already applied?
 
 		// register jarhcReport task
 		project.getTasks().register("jarhcReport", JarhcReportTask.class, task -> setDefaultConfiguration(task, project));
@@ -50,6 +46,15 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		// apply default configuration
 		task.getClasspath().setFrom();
 		task.getProvided().setFrom();
+		task.getRuntime().setFrom();
+		task.getSections().empty();
+		task.getSkipEmpty().set(false);
+		task.getRelease().set(-1);
+		task.getStrategy().set("ParentLast");
+		task.getRemoveVersion().set(false);
+		task.getUseArtifactName().set(false);
+		task.getIgnoreMissingAnnotations().set(false);
+		task.getIgnoreExactCopy().set(false);
 		task.getDataDir().set(dataDir);
 		task.getReportTitle().set(reportTitle);
 		task.getReportFiles().from(htmlReportFile, textReportFile);

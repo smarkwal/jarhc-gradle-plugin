@@ -19,6 +19,7 @@ package org.jarhc.gradle;
 import static org.jarhc.artifacts.MavenRepository.MAVEN_CENTRAL_URL;
 
 import java.io.File;
+import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
@@ -26,6 +27,7 @@ import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
+import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.InputFiles;
@@ -38,6 +40,7 @@ import org.jarhc.artifacts.ArtifactFinder;
 import org.jarhc.artifacts.MavenArtifactFinder;
 import org.jarhc.artifacts.MavenRepository;
 import org.jarhc.artifacts.Repository;
+import org.jarhc.java.ClassLoaderStrategy;
 import org.slf4j.Logger;
 
 public abstract class JarhcReportTask extends DefaultTask {
@@ -48,6 +51,33 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@InputFiles
 	public abstract ConfigurableFileCollection getProvided();
 
+	@InputFiles
+	public abstract ConfigurableFileCollection getRuntime();
+
+	@Input
+	public abstract ListProperty<String> getSections();
+
+	@Input
+	public abstract Property<Boolean> getSkipEmpty();
+
+	@Input
+	public abstract Property<Integer> getRelease();
+
+	@Input
+	public abstract Property<String> getStrategy();
+
+	@Input
+	public abstract Property<Boolean> getRemoveVersion();
+
+	@Input
+	public abstract Property<Boolean> getUseArtifactName();
+
+	@Input
+	public abstract Property<Boolean> getIgnoreMissingAnnotations();
+
+	@Input
+	public abstract Property<Boolean> getIgnoreExactCopy();
+
 	@Internal
 	public abstract DirectoryProperty getDataDir();
 
@@ -57,11 +87,30 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@OutputFiles
 	public abstract ConfigurableFileCollection getReportFiles();
 
+	public JarhcReportTask() {
+		setGroup("verification");
+		setDescription("Generates a JarHC report.");
+	}
+
 	@TaskAction
 	void run() {
+
 		Project project = getProject();
 		Logger logger = project.getLogger();
 		logger.info("JarHC Report Task");
+
+		Options options = createOptions(project, logger);
+
+		int exitCode = runJarHC(options, logger);
+		logger.info("JarHC exit code: {}", exitCode);
+
+		if (exitCode != 0) {
+			throw new GradleException("JarHC failed with exit code " + exitCode);
+		}
+
+	}
+
+	private Options createOptions(Project project, Logger logger) {
 
 		Options options = new Options();
 
@@ -85,36 +134,85 @@ public abstract class JarhcReportTask extends DefaultTask {
 			}
 		}
 
+		FileCollection runtime = getRuntime();
+		if (runtime != null && !runtime.isEmpty()) {
+			logger.info("Runtime:");
+			for (File file : runtime) {
+				options.addRuntimeJarPath(file.getAbsolutePath());
+				logger.info("- {}", logger.isDebugEnabled() ? file.getAbsolutePath() : file.getName());
+			}
+		}
+
+		if (getSections().isPresent() && !getSections().get().isEmpty()) {
+			List<String> sections = getSections().get();
+			logger.info("Sections: {}", sections);
+			options.setSections(sections);
+		}
+
+		if (getSkipEmpty().isPresent()) {
+			boolean skipEmpty = getSkipEmpty().get();
+			logger.info("Skip empty: {}", skipEmpty);
+			options.setSkipEmpty(skipEmpty);
+		}
+
+		if (getRelease().isPresent() && getRelease().get() > 0) {
+			int release = getRelease().get();
+			logger.info("Release: {}", release);
+			options.setRelease(release);
+		}
+
+		if (getStrategy().isPresent()) {
+			String strategy = getStrategy().get();
+			logger.info("Strategy: {}", strategy);
+			options.setClassLoaderStrategy(ClassLoaderStrategy.valueOf(strategy));
+		}
+
+		if (getRemoveVersion().isPresent()) {
+			boolean removeVersion = getRemoveVersion().get();
+			logger.info("Remove version: {}", removeVersion);
+			options.setRemoveVersion(removeVersion);
+		}
+
+		if (getUseArtifactName().isPresent()) {
+			boolean useArtifactName = getUseArtifactName().get();
+			logger.info("Use artifact name: {}", useArtifactName);
+			options.setUseArtifactName(useArtifactName);
+		}
+
+		if (getIgnoreMissingAnnotations().isPresent()) {
+			boolean ignoreMissingAnnotations = getIgnoreMissingAnnotations().get();
+			logger.info("Ignore missing annotations: {}", ignoreMissingAnnotations);
+			options.setIgnoreMissingAnnotations(ignoreMissingAnnotations);
+		}
+
+		if (getIgnoreExactCopy().isPresent()) {
+			boolean ignoreExactCopy = getIgnoreExactCopy().get();
+			logger.info("Ignore exact copy: {}", ignoreExactCopy);
+			options.setIgnoreExactCopy(ignoreExactCopy);
+		}
+
 		if (getDataDir().isPresent()) {
 			String path = getDataDir().get().getAsFile().getAbsolutePath();
-			logger.info("Data path: " + path);
+			logger.info("Data path: {}", path);
 			options.setDataPath(path);
 		} else {
 			throw new GradleException("No data path specified.");
 		}
 
 		String reportTitle = getReportTitle().get();
-		logger.info("Report title: " + reportTitle);
+		logger.info("Report title: {}", reportTitle);
 		options.setReportTitle(reportTitle);
 
 		ConfigurableFileCollection reportFiles = getReportFiles();
 		if (reportFiles != null && !reportFiles.isEmpty()) {
 			for (File reportFile : reportFiles) {
 				String path = reportFile.getAbsolutePath();
-				logger.info("Report file: " + path);
+				logger.info("Report file: {}", path);
 				options.addReportFile(path);
 			}
 		}
 
-		// TODO: support more JarHC options
-
-		int exitCode = runJarHC(options, logger);
-		logger.info("JarHC exit code: " + exitCode);
-
-		if (exitCode != 0) {
-			throw new GradleException("JarHC failed with exit code " + exitCode);
-		}
-
+		return options;
 	}
 
 	private static int runJarHC(Options options, Logger logger) {

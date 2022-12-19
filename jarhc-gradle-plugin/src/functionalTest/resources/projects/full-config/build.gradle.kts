@@ -1,7 +1,10 @@
 plugins {
     java
-    id("org.jarhc") version "1.0.0-SNAPSHOT"
+    id("org.jarhc")
 }
+
+group = "org.jarhc.gradle.test"
+version = "0.9.0"
 
 repositories {
     mavenCentral()
@@ -18,6 +21,14 @@ tasks {
     jarhcReport {
         classpath.setFrom(configurations.runtimeClasspath)
         dataDir.set(file("${projectDir}/jarhc-data"))
+        sections.addAll("jf", "m", "cv", "jd", "d", "p", "dc", "bc", "bl")
+        skipEmpty.set(true)
+        release.set(11)
+        strategy.set("ParentFirst")
+        removeVersion.set(true)
+        useArtifactName.set(true)
+        ignoreMissingAnnotations.set(true)
+        ignoreExactCopy.set(true)
         reportTitle.set("ASM 9.4")
         reportFiles.setFrom(
             file("${projectDir}/jarhc-report-asm-9.4.html"),
