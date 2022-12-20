@@ -2,6 +2,18 @@
 
 Gradle plugin to generate a [JarHC - JAR Health Check](https://github.com/smarkwal/jarhc) report for your project's dependencies.
 
+![JarHC Logo](https://github.com/smarkwal/jarhc/blob/master/docs/jarhc-logo.png?raw=true)
+
+[![License](https://img.shields.io/github/license/smarkwal/jarhc-gradle-plugin?label=License)](https://www.apache.org/licenses/LICENSE-2.0)
+[![Release](https://img.shields.io/github/v/release/smarkwal/jarhc-gradle-plugin?label=Latest)](https://github.com/smarkwal/jarhc-gradle-plugin/releases/latest)
+[![Build](https://github.com/smarkwal/jarhc-gradle-plugin/actions/workflows/build.yml/badge.svg)](https://github.com/smarkwal/jarhc-gradle-plugin/actions/workflows/build.yml)
+[![Tests](https://img.shields.io/sonar/tests/smarkwal_jarhc-gradle-plugin/main?label=Tests&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?metric=test_success_density&view=list&id=smarkwal_jarhc-gradle-plugin)
+[![Coverage](https://img.shields.io/sonar/coverage/smarkwal_jarhc-gradle-plugin/main?label=Coverage&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/component_measures?id=smarkwal_jarhc-gradle-plugin&metric=coverage&view=list)
+[![Quality](https://img.shields.io/sonar/quality_gate/smarkwal_jarhc-gradle-plugin/main?label=Quality&server=https%3A%2F%2Fsonarcloud.io)](https://sonarcloud.io/dashboard?id=smarkwal_jarhc-gradle-plugin)
+[![Issues](https://img.shields.io/github/issues/smarkwal/jarhc-gradle-plugin?label=Issues)](https://github.com/smarkwal/jarhc-gradle-plugin/issues)
+
+---
+
 ## Installation
 
 Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block) for Kotlin:
