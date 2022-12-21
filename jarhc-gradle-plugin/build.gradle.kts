@@ -25,7 +25,7 @@ plugins {
     id("com.gradle.plugin-publish") version "1.1.0"
 
     // Gradle Shadow plugin
-    // TODO: id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 
     // run Sonar analysis
     id("org.sonarqube") version "3.5.0.2730"
@@ -38,6 +38,11 @@ dependencies {
 
     // JarHC 2.1.0
     implementation("org.jarhc:jarhc:2.1.0")
+
+    // Gradle API
+    // (this is required because the Gradle API dependency gets removed by the Shadow plugin)
+    api(gradleApi())
+    testImplementation(gradleApi())
 
     // JUnit 5 and Mockito
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
@@ -91,14 +96,13 @@ idea {
 
 // build -----------------------------------------------------------------------
 
-// TODO: add configuration for shadow plugin
-// tasks.jar {
-//     archiveClassifier.set("default")
-// }
-//
-// tasks.shadowJar {
-//     archiveClassifier.set("")
-// }
+tasks.shadowJar {
+    archiveClassifier.set("")
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
+}
 
 // tests -----------------------------------------------------------------------
 
