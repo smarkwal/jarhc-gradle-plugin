@@ -124,6 +124,7 @@ Add project artifact to classpath:
 ```kotlin
 tasks {
     jarhcReport {
+        dependsOn(jar)
         classpath.setFrom(
             jar.get().archiveFile,
             configurations.runtimeClasspath
