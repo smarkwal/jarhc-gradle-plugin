@@ -116,3 +116,37 @@ tasks {
 ```
 
 Most configuration properties are 1-to-1 equivalents of the command line options explained in the [JarHC documentation](https://github.com/smarkwal/jarhc/wiki/Usage).
+
+## Advanced examples
+
+Add project artifact to classpath:
+
+```kotlin
+tasks {
+    jarhcReport {
+        classpath.setFrom(
+            jar.get().archiveFile,
+            configurations.runtimeClasspath
+        )
+    }    
+}
+```
+
+Add libraries to the "provided" classpath:
+
+```kotlin
+// create a custom configuration
+val providedDependencies by configurations.creating
+
+// add dependencies to the custom configuration
+dependencies {
+    providedDependencies("javax.servlet:javax.servlet-api:3.1.0")
+}
+
+// use the custom configuration in the task
+tasks {
+    jarhcReport {
+        provided.setFrom(providedDependencies)
+    }
+}
+```
