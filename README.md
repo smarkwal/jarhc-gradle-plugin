@@ -107,8 +107,8 @@ tasks {
         ignoreExactCopy.set(true)
 
         // Path to the data directory used by JarHC to cache downloaded JAR and POM files.
-        // Default: "${buildDir}/jarhc-data"
-        dataDir.set(file("${projectDir}/.jarhc"))
+        // Default: "${rootDir}/.jarhc"
+        dataDir.set(file("${buildDir}/jarhc-data"))
 
     }
 

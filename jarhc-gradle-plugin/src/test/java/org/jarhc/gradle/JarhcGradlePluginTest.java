@@ -55,6 +55,7 @@ import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
+@SuppressWarnings("unchecked")
 class JarhcGradlePluginTest {
 
 	@Mock

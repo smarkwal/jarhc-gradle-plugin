@@ -53,7 +53,7 @@ class JarhcGradlePluginFunctionalTest {
 		String projectPath = "projects/default-config";
 		writeTextFile(getSettingsFile(), readTextResource(projectPath + "/settings.gradle.kts"));
 		writeTextFile(getBuildFile(), readTextResource(projectPath + "/build.gradle.kts"));
-		Path expectedDataPath = projectDir.toPath().resolve("build/jarhc-data");
+		Path expectedDataPath = projectDir.toPath().resolve(".jarhc");
 		Path expectedHtmlReportPath = projectDir.toPath().resolve("build/reports/jarhc/jarhc-report.html");
 		Path expectedTextReportPath = projectDir.toPath().resolve("build/reports/jarhc/jarhc-report.txt");
 		String expectedOutput = readTextResource(projectPath + "/expected-output.txt");
@@ -84,7 +84,7 @@ class JarhcGradlePluginFunctionalTest {
 		String projectPath = "projects/full-config";
 		writeTextFile(getSettingsFile(), readTextResource(projectPath + "/settings.gradle.kts"));
 		writeTextFile(getBuildFile(), readTextResource(projectPath + "/build.gradle.kts"));
-		Path expectedDataPath = projectDir.toPath().resolve("jarhc-data");
+		Path expectedDataPath = projectDir.toPath().resolve("build/jarhc-data");
 		Path expectedHtmlReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.html");
 		Path expectedTextReportPath = projectDir.toPath().resolve("jarhc-report-asm-9.4.txt");
 		String expectedOutput = readTextResource(projectPath + "/expected-output.txt");

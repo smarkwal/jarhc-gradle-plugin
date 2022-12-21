@@ -35,10 +35,12 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		// get project information
 		String name = project.getName();
 		String version = project.getVersion().toString();
+
+		Directory rootDir = project.getRootProject().getLayout().getProjectDirectory();
 		DirectoryProperty buildDir = project.getLayout().getBuildDirectory();
 
 		// prepare default values
-		Provider<Directory> dataDir = buildDir.dir("jarhc-data");
+		Directory dataDir = rootDir.dir(".jarhc");
 		String reportTitle = "JarHC Report for " + name + " " + version;
 		Provider<RegularFile> htmlReportFile = buildDir.file("reports/jarhc/jarhc-report.html");
 		Provider<RegularFile> textReportFile = buildDir.file("reports/jarhc/jarhc-report.txt");
