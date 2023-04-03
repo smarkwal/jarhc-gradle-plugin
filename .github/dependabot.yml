@@ -11,7 +11,17 @@ updates:
       day: "friday"
       time: "17:00"
       timezone: "Europe/Zurich"
-    target-branch: "develop"
+    target-branch: "main"
+    open-pull-requests-limit: 100
+
+  - package-ecosystem: "gradle"
+    directory: "/jarhc-gradle-plugin"
+    schedule:
+      interval: "monthly"
+      day: "friday"
+      time: "17:00"
+      timezone: "Europe/Zurich"
+    target-branch: "main"
     open-pull-requests-limit: 100
 
   - package-ecosystem: "github-actions"
@@ -21,5 +31,5 @@ updates:
       day: "friday"
       time: "17:00"
       timezone: "Europe/Zurich"
-    target-branch: "develop"
+    target-branch: "main"
     open-pull-requests-limit: 100
