@@ -28,7 +28,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.1.2"
 
     // run Sonar analysis
-    id("org.sonarqube") version "3.5.0.2730"
+    id("org.sonarqube") version "4.0.0.2929"
 
     // get current Git branch name
     id("org.ajoberstar.grgit") version "5.0.0"
@@ -46,7 +46,7 @@ dependencies {
 
     // JUnit 5 and Mockito
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.1.1")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
 }
 
 gradlePlugin {
