@@ -25,7 +25,7 @@ plugins {
     id("com.gradle.plugin-publish") version "1.1.0"
 
     // Gradle Shadow plugin
-    id("com.github.johnrengelman.shadow") version "7.1.2"
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 
     // run Sonar analysis
     id("org.sonarqube") version "4.0.0.2929"
