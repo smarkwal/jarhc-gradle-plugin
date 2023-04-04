@@ -20,7 +20,7 @@ Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#s
 
 ```kotlin
 plugins {
-    id("org.jarhc") version "1.0.0"
+    id("org.jarhc") version "1.0.1"
 }
 ```
 
