@@ -31,7 +31,7 @@ plugins {
     id("org.sonarqube") version "4.0.0.2929"
 
     // get current Git branch name
-    id("org.ajoberstar.grgit") version "5.0.0"
+    id("org.ajoberstar.grgit") version "5.2.0"
 }
 
 dependencies {
