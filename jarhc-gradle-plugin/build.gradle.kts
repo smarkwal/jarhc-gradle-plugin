@@ -22,7 +22,7 @@ plugins {
 
     // Gradle Publish plugin
     // https://plugins.gradle.org/docs/publish-plugin
-    id("com.gradle.plugin-publish") version "1.1.0"
+    id("com.gradle.plugin-publish") version "1.2.0"
 
     // Gradle Shadow plugin
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -31,7 +31,7 @@ plugins {
     id("org.sonarqube") version "4.0.0.2929"
 
     // get current Git branch name
-    id("org.ajoberstar.grgit") version "5.0.0"
+    id("org.ajoberstar.grgit") version "5.2.0"
 }
 
 dependencies {
@@ -45,8 +45,8 @@ dependencies {
     testImplementation(gradleApi())
 
     // JUnit 5 and Mockito
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.2.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
 }
 
 gradlePlugin {
@@ -169,7 +169,7 @@ tasks.named<Task>("check") {
 val jacocoTestReportXml: String = "${buildDir}/reports/jacoco/test/report.xml"
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.10"
 }
 
 tasks.jacocoTestReport {
