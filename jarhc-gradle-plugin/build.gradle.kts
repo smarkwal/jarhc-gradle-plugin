@@ -46,7 +46,7 @@ dependencies {
 
     // JUnit 5 and Mockito
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.3.1")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.4.0")
 }
 
 gradlePlugin {
