@@ -166,7 +166,7 @@ tasks.named<Task>("check") {
 // JaCoCo test coverage --------------------------------------------------------
 
 // JaCoCo coverage report
-val jacocoTestReportXml: String = "${buildDir}/reports/jacoco/test/report.xml"
+val jacocoTestReportXml: String = "${layout.buildDirectory.get()}/reports/jacoco/test/report.xml"
 
 jacoco {
     toolVersion = "0.8.10"
@@ -179,8 +179,8 @@ tasks.jacocoTestReport {
 
     // get JaCoCo data from all test tasks
     executionData.from(
-        "${buildDir}/jacoco/test.exec",
-        "${buildDir}/jacoco/functionalTest.exec"
+        "${layout.buildDirectory.get()}/jacoco/test.exec",
+        "${layout.buildDirectory.get()}/jacoco/functionalTest.exec"
     )
 
     reports {
@@ -200,8 +200,8 @@ tasks.jacocoTestReport {
 // Sonar analysis --------------------------------------------------------------
 
 // test results
-val testReportPath: String = "${buildDir}/test-results/test"
-val functionalTestReportPath: String = "${buildDir}/test-results/functionalTest"
+val testReportPath: String = "${layout.buildDirectory.get()}/test-results/test"
+val functionalTestReportPath: String = "${layout.buildDirectory.get()}/test-results/functionalTest"
 
 sonar {
     // documentation: https://docs.sonarqube.org/latest/analyzing-source-code/scanners/sonarscanner-for-gradle/
@@ -218,7 +218,7 @@ sonar {
 
         // paths to test sources and test classes
         property("sonar.tests", "${projectDir}/src/test/java,${projectDir}/src/functionalTest/java")
-        property("sonar.java.test.binaries", "${buildDir}/classes/java/test,${buildDir}/classes/java/functionalTest")
+        property("sonar.java.test.binaries", "${layout.buildDirectory.get()}/classes/java/test,${layout.buildDirectory.get()}/classes/java/functionalTest")
 
         // include test results
         property("sonar.junit.reportPaths", "${testReportPath},${functionalTestReportPath}")
