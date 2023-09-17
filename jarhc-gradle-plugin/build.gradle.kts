@@ -46,6 +46,7 @@ dependencies {
 
     // JUnit 5 and Mockito
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testImplementation("org.mockito:mockito-junit-jupiter:5.5.0")
 }
 
@@ -111,6 +112,7 @@ val functionalTestSourceSet = sourceSets.create("functionalTest") {
 }
 
 configurations["functionalTestImplementation"].extendsFrom(configurations["testImplementation"])
+configurations["functionalTestRuntimeOnly"].extendsFrom(configurations["testRuntimeOnly"])
 
 // task to run the functional tests
 val functionalTest by tasks.registering(Test::class) {
