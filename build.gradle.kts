@@ -55,12 +55,18 @@ allprojects {
 
 subprojects {
     apply(plugin = "idea")
+
+    // Java version check ------------------------------------------------------
+    if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+        val error = "Build requires Java 17 and does not run on Java ${JavaVersion.current().majorVersion}."
+        throw GradleException(error)
+    }
 }
 
 // special settings for IntelliJ IDEA
 idea {
     project {
-        jdkName = "11"
+        jdkName = "17"
         languageLevel = org.gradle.plugins.ide.idea.model.IdeaLanguageLevel(JavaVersion.VERSION_11)
         vcs = "Git"
     }
