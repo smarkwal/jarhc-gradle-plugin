@@ -34,6 +34,22 @@ plugins {
     id("org.ajoberstar.grgit") version "5.2.2"
 }
 
+// Preconditions based on which tasks should be executed -----------------------
+
+gradle.taskGraph.whenReady {
+
+    // if sonar task should be executed ...
+    if (gradle.taskGraph.hasTask(":sonar")) {
+        // environment variable SONAR_TOKEN or system property "sonar.token" must be set
+        val tokenFound = System.getProperties().containsKey("sonar.token") || System.getenv("SONAR_TOKEN") != null
+        if (!tokenFound) {
+            val error = "Sonar: Token not found.\nPlease set system property 'sonar.token' or environment variable 'SONAR_TOKEN'."
+            throw GradleException(error)
+        }
+    }
+
+}
+
 dependencies {
 
     // JarHC 2.1.0
