@@ -28,10 +28,26 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 
     // run Sonar analysis
-    id("org.sonarqube") version "4.4.1.3373"
+    id("org.sonarqube") version "5.0.0.4638"
 
     // get current Git branch name
     id("org.ajoberstar.grgit") version "5.2.2"
+}
+
+// Preconditions based on which tasks should be executed -----------------------
+
+gradle.taskGraph.whenReady {
+
+    // if sonar task should be executed ...
+    if (gradle.taskGraph.hasTask(":sonar")) {
+        // environment variable SONAR_TOKEN or system property "sonar.token" must be set
+        val tokenFound = System.getProperties().containsKey("sonar.token") || System.getenv("SONAR_TOKEN") != null
+        if (!tokenFound) {
+            val error = "Sonar: Token not found.\nPlease set system property 'sonar.token' or environment variable 'SONAR_TOKEN'."
+            throw GradleException(error)
+        }
+    }
+
 }
 
 dependencies {
@@ -47,7 +63,7 @@ dependencies {
     // JUnit 5 and Mockito
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.11.0")
 }
 
 gradlePlugin {
