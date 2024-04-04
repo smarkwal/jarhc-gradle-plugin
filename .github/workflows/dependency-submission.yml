@@ -3,6 +3,9 @@ name: Dependency Submission
 on:
   push:
 
+permissions:
+  contents: write
+
 jobs:
   dependency-submission:
     runs-on: ubuntu-latest
