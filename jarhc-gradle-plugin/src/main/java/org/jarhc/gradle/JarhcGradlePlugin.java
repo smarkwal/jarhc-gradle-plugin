@@ -51,6 +51,7 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		task.getRuntime().setFrom();
 		task.getSections().empty();
 		task.getSkipEmpty().set(false);
+		task.getSortRows().set(false);
 		task.getRelease().set(-1);
 		task.getStrategy().set("ParentLast");
 		task.getRemoveVersion().set(false);

@@ -23,6 +23,7 @@ tasks {
         dataDir.set(file("${layout.buildDirectory.get()}/jarhc-data"))
         sections.addAll("jf", "m", "cv", "jd", "d", "p", "dc", "bc", "bl")
         skipEmpty.set(true)
+        sortRows.set(true)
         release.set(11)
         strategy.set("ParentFirst")
         removeVersion.set(true)

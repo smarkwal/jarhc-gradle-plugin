@@ -20,7 +20,7 @@ Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#s
 
 ```kotlin
 plugins {
-    id("org.jarhc") version "1.0.1"
+    id("org.jarhc") version "1.1.0"
 }
 ```
 
@@ -81,6 +81,10 @@ tasks {
         // Exclude sections without any issues from the report.
         // Default: false
         skipEmpty.set(true)
+
+        // Sort JAR files in reports by name.
+        // Default: false
+        sortRows.set(true)
 
         // Java release (8, 9, 10, ...) to use for analysis of multi-release JAR files.
         // Default: version of Java used to run Gradle build

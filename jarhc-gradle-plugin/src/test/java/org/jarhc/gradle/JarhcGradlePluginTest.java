@@ -182,6 +182,10 @@ class JarhcGradlePluginTest {
 		when(skipEmpty.isPresent()).thenReturn(false);
 		when(task.getSkipEmpty()).thenReturn(skipEmpty);
 
+		Property<Boolean> sortRows = mock(Property.class);
+		when(sortRows.isPresent()).thenReturn(false);
+		when(task.getSortRows()).thenReturn(sortRows);
+
 		Property<Integer> release = mock(Property.class);
 		when(release.isPresent()).thenReturn(false);
 		when(task.getRelease()).thenReturn(release);
@@ -267,6 +271,11 @@ class JarhcGradlePluginTest {
 		when(skipEmpty.isPresent()).thenReturn(true);
 		when(skipEmpty.get()).thenReturn(true);
 		when(task.getSkipEmpty()).thenReturn(skipEmpty);
+
+		Property<Boolean> sortRows = mock(Property.class);
+		when(sortRows.isPresent()).thenReturn(true);
+		when(sortRows.get()).thenReturn(true);
+		when(task.getSortRows()).thenReturn(sortRows);
 
 		Property<Integer> release = mock(Property.class);
 		when(release.isPresent()).thenReturn(true);

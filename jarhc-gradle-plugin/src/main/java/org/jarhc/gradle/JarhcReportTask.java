@@ -61,6 +61,9 @@ public abstract class JarhcReportTask extends DefaultTask {
 	public abstract Property<Boolean> getSkipEmpty();
 
 	@Input
+	public abstract Property<Boolean> getSortRows();
+
+	@Input
 	public abstract Property<Integer> getRelease();
 
 	@Input
@@ -154,6 +157,12 @@ public abstract class JarhcReportTask extends DefaultTask {
 			boolean skipEmpty = getSkipEmpty().get();
 			logger.info("Skip empty: {}", skipEmpty);
 			options.setSkipEmpty(skipEmpty);
+		}
+
+		if (getSortRows().isPresent()) {
+			boolean sortRows = getSortRows().get();
+			logger.info("Sort rows: {}", sortRows);
+			options.setSortRows(sortRows);
 		}
 
 		if (getRelease().isPresent() && getRelease().get() > 0) {
