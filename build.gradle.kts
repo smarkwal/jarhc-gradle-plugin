@@ -42,6 +42,14 @@ tasks {
             delete("${rootDir}/build")
         }
     }
+
+    dependencyUpdates {
+        gradleReleaseChannel = "current"
+        rejectVersionIf {
+            isUnstableVersion(candidate)
+        }
+    }
+
 }
 
 allprojects {
@@ -79,4 +87,10 @@ idea {
         languageLevel = org.gradle.plugins.ide.idea.model.IdeaLanguageLevel(JavaVersion.VERSION_11)
         vcs = "Git"
     }
+}
+
+fun isUnstableVersion(candidate: ModuleComponentIdentifier): Boolean {
+    return candidate.version.contains("-M") // ignore milestone version
+            || candidate.version.contains("-rc") // ignore release candidate versions
+            || candidate.version.contains("-alpha") // ignore alpha versions
 }
