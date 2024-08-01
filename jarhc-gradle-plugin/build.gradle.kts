@@ -28,7 +28,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 
     // run Sonar analysis
-    id("org.sonarqube") version "5.0.0.4638"
+    id("org.sonarqube") version "5.1.0.4882"
 
     // get current Git branch name
     id("org.ajoberstar.grgit") version "5.2.2"
