@@ -22,7 +22,7 @@ plugins {
 
     // Gradle Publish plugin
     // https://plugins.gradle.org/docs/publish-plugin
-    id("com.gradle.plugin-publish") version "1.2.1"
+    id("com.gradle.plugin-publish") version "1.2.2"
 
     // Gradle Shadow plugin
     id("com.github.johnrengelman.shadow") version "8.1.1"
