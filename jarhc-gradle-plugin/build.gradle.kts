@@ -52,8 +52,8 @@ gradle.taskGraph.whenReady {
 
 dependencies {
 
-    // JarHC 2.2.1
-    implementation("org.jarhc:jarhc:2.2.1")
+    // JarHC 2.2.2
+    implementation("org.jarhc:jarhc:2.2.2")
 
     // Gradle API
     // (this is required because the Gradle API dependency gets removed by the Shadow plugin)
