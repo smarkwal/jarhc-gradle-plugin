@@ -2,7 +2,6 @@ name: Build
 
 on:
   push:
-  #pull_request:
   workflow_dispatch:
     inputs:
       additionalGradleOptions:
@@ -34,9 +33,6 @@ jobs:
           11
           17
 
-    - name: Validate Gradle wrapper
-      uses: gradle/actions/wrapper-validation@v3
-
     - name: Restore Sonar Cache
       uses: actions/cache@v4
       if: ${{ github.event_name == 'push' && !startsWith(github.ref_name, 'dependabot/') }}
@@ -48,11 +44,13 @@ jobs:
       if: ${{ github.event_name == 'push' && !startsWith(github.ref_name, 'dependabot/') }}
       run: echo "PUSH_GRADLE_OPTIONS=sonar" >> $GITHUB_ENV
 
-    - name: Build with Gradle
-      uses: gradle/gradle-build-action@v3
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
       with:
-        arguments: '--no-daemon build ${{ env.PUSH_GRADLE_OPTIONS }} ${{ github.event.inputs.additionalGradleOptions }}'
         cache-read-only: false
+
+    - name: Build with Gradle
+      run: './gradlew --no-daemon build ${{ env.PUSH_GRADLE_OPTIONS }} ${{ github.event.inputs.additionalGradleOptions }}'
 
     - name: Upload reports
       uses: actions/upload-artifact@v4
