@@ -16,8 +16,6 @@
 
 package org.jarhc.gradle;
 
-import static org.jarhc.artifacts.MavenRepository.MAVEN_CENTRAL_URL;
-
 import java.io.File;
 import java.util.List;
 import org.gradle.api.DefaultTask;
@@ -159,10 +157,8 @@ public abstract class JarhcReportTask extends DefaultTask {
 			options.setSkipEmpty(skipEmpty);
 		}
 
-		if (getSortRows().isPresent()) {
-			boolean sortRows = getSortRows().get();
-			logger.info("Sort rows: {}", sortRows);
-			options.setSortRows(sortRows);
+		if (getSortRows() != null && getSortRows().isPresent()) {
+			logger.warn("Option 'sortRows' has been deprecated and is ignored.");
 		}
 
 		if (getRelease().isPresent() && getRelease().get() > 0) {
@@ -177,16 +173,12 @@ public abstract class JarhcReportTask extends DefaultTask {
 			options.setClassLoaderStrategy(ClassLoaderStrategy.valueOf(strategy));
 		}
 
-		if (getRemoveVersion().isPresent()) {
-			boolean removeVersion = getRemoveVersion().get();
-			logger.info("Remove version: {}", removeVersion);
-			options.setRemoveVersion(removeVersion);
+		if (getRemoveVersion() != null && getRemoveVersion().isPresent()) {
+			logger.warn("Option 'removeVersion' has been deprecated and is ignored.");
 		}
 
-		if (getUseArtifactName().isPresent()) {
-			boolean useArtifactName = getUseArtifactName().get();
-			logger.info("Use artifact name: {}", useArtifactName);
-			options.setUseArtifactName(useArtifactName);
+		if (getUseArtifactName() != null && getUseArtifactName().isPresent()) {
+			logger.warn("Option 'useArtifactName' has been deprecated and is ignored.");
 		}
 
 		if (getIgnoreMissingAnnotations().isPresent()) {
@@ -245,7 +237,7 @@ public abstract class JarhcReportTask extends DefaultTask {
 		ArtifactFinder artifactFinder = new MavenArtifactFinder(cacheDir, logger);
 
 		int javaVersion = options.getRelease();
-		Repository repository = new MavenRepository(javaVersion, MAVEN_CENTRAL_URL, dataPath, artifactFinder, logger);
+		Repository repository = new MavenRepository(javaVersion, options, dataPath, artifactFinder, logger);
 
 		Application application = new Application(logger);
 		application.setRepository(repository);

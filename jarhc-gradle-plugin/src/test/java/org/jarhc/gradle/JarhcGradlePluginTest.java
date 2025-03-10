@@ -237,8 +237,6 @@ class JarhcGradlePluginTest {
 		assertFalse(options.isSkipEmpty());
 		assertEquals(11, options.getRelease());
 		assertEquals(ClassLoaderStrategy.ParentLast, options.getClassLoaderStrategy());
-		assertFalse(options.isRemoveVersion());
-		assertFalse(options.isUseArtifactName());
 		assertFalse(options.isIgnoreMissingAnnotations());
 		assertFalse(options.isIgnoreExactCopy());
 		assertEquals("/jarhc/data", options.getDataPath());
@@ -337,8 +335,6 @@ class JarhcGradlePluginTest {
 		assertTrue(options.isSkipEmpty());
 		assertEquals(17, options.getRelease());
 		assertEquals(ClassLoaderStrategy.ParentFirst, options.getClassLoaderStrategy());
-		assertTrue(options.isRemoveVersion());
-		assertTrue(options.isUseArtifactName());
 		assertTrue(options.isIgnoreMissingAnnotations());
 		assertTrue(options.isIgnoreExactCopy());
 		assertEquals("/jarhc/data", options.getDataPath());

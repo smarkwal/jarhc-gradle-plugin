@@ -21,7 +21,7 @@ tasks {
     jarhcReport {
         classpath.setFrom(configurations.runtimeClasspath)
         dataDir.set(file("${layout.buildDirectory.get()}/jarhc-data"))
-        sections.addAll("jf", "m", "cv", "jd", "d", "p", "dc", "bc", "bl")
+        sections.addAll("jf", "d", "dc", "bc", "bl", "jm", "m", "ob")
         skipEmpty.set(true)
         sortRows.set(true)
         release.set(11)

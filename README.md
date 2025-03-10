@@ -76,15 +76,11 @@ tasks {
         // Sections to include in the report.
         // See https://github.com/smarkwal/jarhc/wiki/Usage for more details.
         // Default: empty list = include all sections
-        sections.addAll("jf", "m", "cv", "jd", "d", "p", "dc", "bc", "bl")
+        sections.addAll("jf", "d", "dc", "bc", "bl", "jm", "m", "ob" )
 
         // Exclude sections without any issues from the report.
         // Default: false
         skipEmpty.set(true)
-
-        // Sort JAR files in reports by name.
-        // Default: false
-        sortRows.set(true)
 
         // Java release (8, 9, 10, ...) to use for analysis of multi-release JAR files.
         // Default: version of Java used to run Gradle build
@@ -93,14 +89,6 @@ tasks {
         // Classloader strategy. Used only if provided and/or runtime classpath is set.
         // Default: "ParentLast"
         strategy.set("ParentFirst")
-
-        // Remove version numbers from JAR file names in the report.
-        // Default: false
-        removeVersion.set(true)
-
-        // Recreate JAR file names based on Maven coordinates if possible.
-        // Default: false
-        useArtifactName.set(true)
 
         // Ignore issues related to missing Java annotations.
         // Default: false

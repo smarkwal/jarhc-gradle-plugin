@@ -22,7 +22,7 @@ plugins {
 
     // Gradle Publish plugin
     // https://plugins.gradle.org/docs/publish-plugin
-    id("com.gradle.plugin-publish") version "1.3.0"
+    id("com.gradle.plugin-publish") version "1.3.1"
 
     // Gradle Shadow plugin
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -53,7 +53,7 @@ gradle.taskGraph.whenReady {
 dependencies {
 
     // JarHC 2.2.2
-    implementation("org.jarhc:jarhc:2.2.2")
+    implementation("org.jarhc:jarhc:3.0.0")
 
     // Gradle API
     // (this is required because the Gradle API dependency gets removed by the Shadow plugin)
@@ -61,9 +61,9 @@ dependencies {
     testImplementation(gradleApi())
 
     // JUnit 5 and Mockito
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.15.2")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.16.0")
 }
 
 gradlePlugin {
