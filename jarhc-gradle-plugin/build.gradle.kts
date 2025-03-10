@@ -52,7 +52,7 @@ gradle.taskGraph.whenReady {
 
 dependencies {
 
-    // JarHC 2.2.2
+    // JarHC 3.0.0
     implementation("org.jarhc:jarhc:3.0.0")
 
     // Gradle API
