@@ -9,18 +9,18 @@ updates:
     schedule:
       interval: "monthly"
     target-branch: "main"
-    open-pull-requests-limit: 100
+    open-pull-requests-limit: 0
 
   - package-ecosystem: "gradle"
     directory: "/jarhc-gradle-plugin"
     schedule:
       interval: "monthly"
     target-branch: "main"
-    open-pull-requests-limit: 100
+    open-pull-requests-limit: 0
 
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
     target-branch: "main"
-    open-pull-requests-limit: 100
+    open-pull-requests-limit: 0
