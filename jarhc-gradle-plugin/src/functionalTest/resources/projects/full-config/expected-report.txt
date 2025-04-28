@@ -24,19 +24,23 @@ Artifact     | Uses         | Used by      | Maven coordinates            | Upda
 asm          | [none]       | asm-analysis | org.ow2.asm:asm:9.4          | 9.5        | [none]                       |
              |              | asm-commons  |                              | 9.6        |                              |
              |              | asm-tree     |                              | 9.7, 9.7.1 |                              |
-             |              | asm-util     |                              |            |                              |
+             |              | asm-util     |                              | 9.8        |                              |
 asm-analysis | asm          | asm-util     | org.ow2.asm:asm-analysis:9.4 | 9.5        | org.ow2.asm:asm-tree:9.4     | OK
              | asm-tree     |              |                              | 9.6        |                              |
              |              |              |                              | 9.7, 9.7.1 |                              |
+             |              |              |                              | 9.8        |                              |
 asm-commons  | asm          | [none]       | org.ow2.asm:asm-commons:9.4  | 9.5        | org.ow2.asm:asm-tree:9.4     | OK
              | asm-tree     |              |                              | 9.6        | org.ow2.asm:asm:9.4          | OK
              |              |              |                              | 9.7, 9.7.1 |                              |
+             |              |              |                              | 9.8        |                              |
 asm-tree     | asm          | asm-analysis | org.ow2.asm:asm-tree:9.4     | 9.5        | org.ow2.asm:asm:9.4          | OK
              |              | asm-commons  |                              | 9.6        |                              |
              |              | asm-util     |                              | 9.7, 9.7.1 |                              |
+             |              |              |                              | 9.8        |                              |
 asm-util     | asm          | [none]       | org.ow2.asm:asm-util:9.4     | 9.5        | org.ow2.asm:asm-analysis:9.4 | OK
              | asm-analysis |              |                              | 9.6        | org.ow2.asm:asm-tree:9.4     | OK
              | asm-tree     |              |                              | 9.7, 9.7.1 | org.ow2.asm:asm:9.4          | OK
+             |              |              |                              | 9.8        |                              |
 
 Blacklist
 ---------
