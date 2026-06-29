@@ -235,7 +235,8 @@ class JarhcGradlePluginTest {
 		assertEquals(List.of(), options.getRuntimeJarPaths());
 		assertNull(options.getSections());
 		assertFalse(options.isSkipEmpty());
-		assertEquals(11, options.getRelease());
+		// default release is the Java version running the tests (see Options)
+		assertEquals(Runtime.version().feature(), options.getRelease());
 		assertEquals(ClassLoaderStrategy.ParentLast, options.getClassLoaderStrategy());
 		assertFalse(options.isIgnoreMissingAnnotations());
 		assertFalse(options.isIgnoreExactCopy());

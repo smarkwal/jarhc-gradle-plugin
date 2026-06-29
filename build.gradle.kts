@@ -20,7 +20,7 @@ plugins {
 
     // Gradle Versions Plugin
     // https://github.com/ben-manes/gradle-versions-plugin
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
 
 }
 
@@ -63,12 +63,6 @@ allprojects {
 
 subprojects {
     apply(plugin = "idea")
-
-    // Java version check ------------------------------------------------------
-    if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
-        val error = "Build requires Java 17 and does not run on Java ${JavaVersion.current().majorVersion}."
-        throw GradleException(error)
-    }
 }
 
 // special settings for IntelliJ IDEA
