@@ -48,9 +48,11 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		// apply default configuration
 		// default the classpath to the project's runtime classpath, wired at
 		// configuration time so the task never accesses Task.project at execution
-		// time (which is deprecated and removed for the configuration cache)
+		// time (which is deprecated and removed for the configuration cache).
+		// convention() is used instead of setFrom() so an explicit classpath
+		// configured on the task always wins, regardless of plugin apply order.
 		project.getPluginManager().withPlugin("java", plugin ->
-				task.getClasspath().setFrom(project.getConfigurations().named("runtimeClasspath")));
+				task.getClasspath().convention(project.getConfigurations().named("runtimeClasspath")));
 		task.getProvided().setFrom();
 		task.getRuntime().setFrom();
 		task.getSections().empty();
