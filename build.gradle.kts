@@ -61,10 +61,6 @@ allprojects {
 
 }
 
-subprojects {
-    apply(plugin = "idea")
-}
-
 // special settings for IntelliJ IDEA
 idea {
     project {

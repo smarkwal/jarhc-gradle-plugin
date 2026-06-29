@@ -16,6 +16,7 @@
 
 plugins {
     `java-gradle-plugin`
+    idea
     jacoco
     signing
     `maven-publish`
