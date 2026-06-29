@@ -1,0 +1,56 @@
+# This is a Gradle generated file for dependency locking.
+# Manual edits can break the build and are not advised.
+# This file is expected to be part of source control.
+# To regenerate this file, run: ./gradlew :jarhc-gradle-plugin:dependencies --write-locks
+com.google.code.gson:gson:2.13.2=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+com.google.errorprone:error_prone_annotations:2.41.0=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+commons-codec:commons-codec:1.21.0=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+net.bytebuddy:byte-buddy-agent:1.17.7=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+net.bytebuddy:byte-buddy:1.17.7=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.apache.httpcomponents:httpclient:4.5.14=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.httpcomponents:httpcore:4.4.16=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-api:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-connector-basic:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-impl:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-named-locks:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-spi:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-supplier:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-transport-file:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-transport-http:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven.resolver:maven-resolver-util:1.9.27=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven:maven-artifact:3.9.12=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven:maven-builder-support:3.9.12=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven:maven-model-builder:3.9.12=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven:maven-model:3.9.12=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven:maven-repository-metadata:3.9.12=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apache.maven:maven-resolver-provider:3.9.12=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.apiguardian:apiguardian-api:1.1.2=functionalTestCompileClasspath,testCompileClasspath
+org.codehaus.plexus:plexus-interpolation:1.29=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.codehaus.plexus:plexus-utils:3.6.1=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.jacoco:org.jacoco.agent:0.8.14=jacocoAgent,jacocoAnt
+org.jacoco:org.jacoco.ant:0.8.14=jacocoAnt
+org.jacoco:org.jacoco.core:0.8.14=jacocoAnt
+org.jacoco:org.jacoco.report:0.8.14=jacocoAnt
+org.jarhc:jarhc:3.1.0=compileClasspath,functionalTestCompileClasspath,functionalTestRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.json:json:20260522=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.jspecify:jspecify:1.0.0=functionalTestCompileClasspath,testCompileClasspath
+org.junit.jupiter:junit-jupiter-api:6.1.1=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-engine:6.1.1=functionalTestRuntimeClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter-params:6.1.1=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.junit.jupiter:junit-jupiter:6.1.1=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.junit.platform:junit-platform-commons:6.1.1=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.junit.platform:junit-platform-engine:6.1.1=functionalTestRuntimeClasspath,testRuntimeClasspath
+org.junit.platform:junit-platform-launcher:6.1.1=functionalTestRuntimeClasspath,testRuntimeClasspath
+org.junit:junit-bom:6.1.1=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.mockito:mockito-core:5.23.0=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.mockito:mockito-junit-jupiter:5.23.0=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.objenesis:objenesis:3.3=functionalTestRuntimeClasspath,testRuntimeClasspath
+org.opentest4j:opentest4j:1.3.0=functionalTestCompileClasspath,functionalTestRuntimeClasspath,testCompileClasspath,testRuntimeClasspath
+org.ow2.asm:asm-commons:9.9=jacocoAnt
+org.ow2.asm:asm-tree:9.9=jacocoAnt
+org.ow2.asm:asm:9.10.1=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.ow2.asm:asm:9.9=jacocoAnt
+org.slf4j:jcl-over-slf4j:2.0.18=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.slf4j:jul-to-slf4j:2.0.18=functionalTestRuntimeClasspath,runtimeClasspath,testRuntimeClasspath
+org.slf4j:slf4j-api:2.0.18=compileClasspath,functionalTestCompileClasspath,functionalTestRuntimeClasspath,runtimeClasspath,testCompileClasspath,testRuntimeClasspath
+empty=annotationProcessor,functionalTestAnnotationProcessor,shadow,testAnnotationProcessor
