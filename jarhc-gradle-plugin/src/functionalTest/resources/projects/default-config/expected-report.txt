@@ -15,32 +15,49 @@ asm-tree     | 9.4     | asm-tree-9.4.jar     | 51.4 KB | No            | Java 5
 asm-util     | 9.4     | asm-util-9.4.jar     | 89.4 KB | No            | Java 5 (26)            | 0         | org.objectweb.asm.util          | ab1e0a84b72561dbaf1ee260321e72148ebf4b19 | org.ow2.asm:asm-util:9.4     |
 Classpath    | -       | -                    | 365 KB  | -             | Java 5 (142)           | 0         | 6                               | -                                        | -                            | -
 
+Vulnerabilities
+---------------
+Known security vulnerabilities found in the artifacts.
+
+CVE | Artifacts | Severity | Description | Advisory
+----+-----------+----------+-------------+---------
+
 Dependencies
 ------------
 Dependencies between JAR files, and as declared in POM file.
 
-Artifact     | Uses         | Used by      | Maven coordinates            | Updates    | Direct dependencies          | Status
--------------+--------------+--------------+------------------------------+------------+------------------------------+-------
-asm          | [none]       | asm-analysis | org.ow2.asm:asm:9.4          | 9.5        | [none]                       |
-             |              | asm-commons  |                              | 9.6        |                              |
-             |              | asm-tree     |                              | 9.7, 9.7.1 |                              |
-             |              | asm-util     |                              | 9.8        |                              |
-asm-analysis | asm          | asm-util     | org.ow2.asm:asm-analysis:9.4 | 9.5        | org.ow2.asm:asm-tree:9.4     | OK
-             | asm-tree     |              |                              | 9.6        |                              |
-             |              |              |                              | 9.7, 9.7.1 |                              |
-             |              |              |                              | 9.8        |                              |
-asm-commons  | asm          | [none]       | org.ow2.asm:asm-commons:9.4  | 9.5        | org.ow2.asm:asm-tree:9.4     | OK
-             | asm-tree     |              |                              | 9.6        | org.ow2.asm:asm:9.4          | OK
-             |              |              |                              | 9.7, 9.7.1 |                              |
-             |              |              |                              | 9.8        |                              |
-asm-tree     | asm          | asm-analysis | org.ow2.asm:asm-tree:9.4     | 9.5        | org.ow2.asm:asm:9.4          | OK
-             |              | asm-commons  |                              | 9.6        |                              |
-             |              | asm-util     |                              | 9.7, 9.7.1 |                              |
-             |              |              |                              | 9.8        |                              |
-asm-util     | asm          | [none]       | org.ow2.asm:asm-util:9.4     | 9.5        | org.ow2.asm:asm-analysis:9.4 | OK
-             | asm-analysis |              |                              | 9.6        | org.ow2.asm:asm-tree:9.4     | OK
-             | asm-tree     |              |                              | 9.7, 9.7.1 | org.ow2.asm:asm:9.4          | OK
-             |              |              |                              | 9.8        |                              |
+Artifact     | Uses         | Used by      | Maven coordinates            | Updates      | Direct dependencies
+-------------+--------------+--------------+------------------------------+--------------+----------------------------------
+asm          | [none]       | asm-analysis | org.ow2.asm:asm:9.4          | 9.5          | [none]
+             |              | asm-commons  |                              | 9.6          |
+             |              | asm-tree     |                              | 9.7, 9.7.1   |
+             |              | asm-util     |                              | 9.8          |
+             |              |              |                              | 9.9, 9.9.1   |
+             |              |              |                              | 9.10, 9.10.1 |
+asm-analysis | asm          | asm-util     | org.ow2.asm:asm-analysis:9.4 | 9.5          | org.ow2.asm:asm-tree:9.4 [OK]
+             | asm-tree     |              |                              | 9.6          |
+             |              |              |                              | 9.7, 9.7.1   |
+             |              |              |                              | 9.8          |
+             |              |              |                              | 9.9, 9.9.1   |
+             |              |              |                              | 9.10, 9.10.1 |
+asm-commons  | asm          | [none]       | org.ow2.asm:asm-commons:9.4  | 9.5          | org.ow2.asm:asm-tree:9.4 [OK]
+             | asm-tree     |              |                              | 9.6          | org.ow2.asm:asm:9.4 [OK]
+             |              |              |                              | 9.7, 9.7.1   |
+             |              |              |                              | 9.8          |
+             |              |              |                              | 9.9, 9.9.1   |
+             |              |              |                              | 9.10, 9.10.1 |
+asm-tree     | asm          | asm-analysis | org.ow2.asm:asm-tree:9.4     | 9.5          | org.ow2.asm:asm:9.4 [OK]
+             |              | asm-commons  |                              | 9.6          |
+             |              | asm-util     |                              | 9.7, 9.7.1   |
+             |              |              |                              | 9.8          |
+             |              |              |                              | 9.9, 9.9.1   |
+             |              |              |                              | 9.10, 9.10.1 |
+asm-util     | asm          | [none]       | org.ow2.asm:asm-util:9.4     | 9.5          | org.ow2.asm:asm-analysis:9.4 [OK]
+             | asm-analysis |              |                              | 9.6          | org.ow2.asm:asm-tree:9.4 [OK]
+             | asm-tree     |              |                              | 9.7, 9.7.1   | org.ow2.asm:asm:9.4 [OK]
+             |              |              |                              | 9.8          |
+             |              |              |                              | 9.9, 9.9.1   |
+             |              |              |                              | 9.10, 9.10.1 |
 
 Duplicate Classes
 -----------------
