@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -112,6 +113,27 @@ class JarhcGradlePluginFunctionalTest {
 		String textReport = Files.readString(expectedTextReportPath);
 		assertEquals(expectedTextReport, textReport);
 		System.out.println(textReport);
+	}
+
+	@Test
+	void failsWithClearMessageBelowMinimumGradleVersion() throws IOException {
+
+		// prepare: a minimal project that applies the plugin
+		String projectPath = "projects/default-config";
+		writeTextFile(getSettingsFile(), readTextResource(projectPath + "/settings.gradle.kts"));
+		writeTextFile(getBuildFile(), readTextResource(projectPath + "/build.gradle.kts"));
+
+		// test: run against a Gradle version below the minimum supported version
+		BuildResult result = GradleRunner.create()
+				.forwardOutput()
+				.withPluginClasspath()
+				.withGradleVersion("8.7")
+				.withArguments("jarhcReport")
+				.withProjectDir(projectDir)
+				.buildAndFail();
+
+		// assert: clear message instead of a cryptic NoSuchMethodError
+		assertTrue(result.getOutput().contains("requires Gradle 8.8 or later"));
 	}
 
 	private BuildResult runTask(String gradleVersion) {
