@@ -143,6 +143,8 @@ configurations["functionalTestRuntimeOnly"].extendsFrom(configurations["testRunt
 
 // task to run the functional tests
 val functionalTest = tasks.register<Test>("functionalTest") {
+    group = "verification"
+    description = "Runs the functional tests."
     testClassesDirs = functionalTestSourceSet.output.classesDirs
     classpath = functionalTestSourceSet.runtimeClasspath
     shouldRunAfter("test")
