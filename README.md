@@ -43,7 +43,7 @@ build/
         └── jarhc-report.txt
 ```
 
-Example reports can be found here: [JarHC example reports](https://github.com/smarkwal/jarhc/wiki/Reports)
+Example reports can be found here: [JarHC example reports](https://jarhc.org/latest/reports/#examples)
 
 You can control many aspects of the JarHC task and take influence on the analysis and the report(s):
 
@@ -74,7 +74,7 @@ tasks {
         )
 
         // Sections to include in the report.
-        // See https://github.com/smarkwal/jarhc/wiki/Usage for more details.
+        // See https://jarhc.org/latest/usage/ for more details.
         // Default: empty list = include all sections
         sections.addAll("jf", "d", "dc", "bc", "bl", "jm", "m", "ob" )
 
@@ -107,7 +107,7 @@ tasks {
 }
 ```
 
-Most configuration properties are 1-to-1 equivalents of the command line options explained in the [JarHC documentation](https://github.com/smarkwal/jarhc/wiki/Usage).
+Most configuration properties are 1-to-1 equivalents of the command line options explained in the [JarHC documentation](https://jarhc.org/latest/usage/).
 
 ## Advanced examples
 
