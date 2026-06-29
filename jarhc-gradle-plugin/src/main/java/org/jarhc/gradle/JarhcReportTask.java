@@ -20,8 +20,6 @@ import java.io.File;
 import java.util.List;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
-import org.gradle.api.Project;
-import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
@@ -102,11 +100,10 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@TaskAction
 	void run() {
 
-		Project project = getProject();
-		Logger logger = project.getLogger();
+		Logger logger = getLogger();
 		logger.info("JarHC Report Task");
 
-		Options options = createOptions(project, logger);
+		Options options = createOptions(logger);
 
 		int exitCode = runJarHC(options, logger);
 		logger.info("JarHC exit code: {}", exitCode);
@@ -118,15 +115,11 @@ public abstract class JarhcReportTask extends DefaultTask {
 	}
 
 	// visible for testing
-	Options createOptions(Project project, Logger logger) {
+	Options createOptions(Logger logger) {
 
 		Options options = new Options();
 
 		FileCollection classpath = getClasspath();
-		if (classpath == null || classpath.isEmpty()) {
-			ConfigurationContainer configurations = project.getConfigurations();
-			classpath = configurations.getByName("runtimeClasspath");
-		}
 		logger.info("Classpath:");
 		for (File file : classpath) {
 			options.addClasspathJarPath(file.getAbsolutePath());

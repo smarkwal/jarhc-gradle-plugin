@@ -31,8 +31,6 @@ import java.util.List;
 import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.artifacts.ConfigurationContainer;
 import org.gradle.api.file.ConfigurableFileCollection;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
@@ -59,9 +57,6 @@ import org.mockito.quality.Strictness;
 class JarhcGradlePluginTest {
 
 	@Mock
-	Project project;
-
-	@Mock
 	Logger logger;
 
 	@Mock
@@ -70,16 +65,8 @@ class JarhcGradlePluginTest {
 	@BeforeEach
 	void setUp() {
 
-		// setup: project
-		when(project.getLogger()).thenReturn(logger);
-		ConfigurationContainer configurations = mock(ConfigurationContainer.class);
-		when(project.getConfigurations()).thenReturn(configurations);
-		Configuration configuration = mock(Configuration.class);
-		when(configurations.getByName("runtimeClasspath")).thenReturn(configuration);
-		when(configuration.iterator()).thenReturn(List.of(new File("/jarhc/a.jar")).iterator());
-
 		// setup: task
-		when(task.getProject()).thenReturn(project);
+		when(task.getLogger()).thenReturn(logger);
 
 	}
 
@@ -110,7 +97,7 @@ class JarhcGradlePluginTest {
 		Options options = new Options();
 
 		// prepare: task
-		when(task.createOptions(project, logger)).thenReturn(options);
+		when(task.createOptions(logger)).thenReturn(options);
 		when(task.runJarHC(options, logger)).thenReturn(0);
 		doCallRealMethod().when(task).run();
 
@@ -130,7 +117,7 @@ class JarhcGradlePluginTest {
 		Options options = new Options();
 
 		// prepare: task
-		when(task.createOptions(project, logger)).thenReturn(options);
+		when(task.createOptions(logger)).thenReturn(options);
 		when(task.runJarHC(options, logger)).thenReturn(123);
 		doCallRealMethod().when(task).run();
 
@@ -168,7 +155,9 @@ class JarhcGradlePluginTest {
 	void createOptions_withDefaultConfig() {
 
 		// prepare: task
-		when(task.getClasspath()).thenReturn(null);
+		ConfigurableFileCollection classpath = mock(ConfigurableFileCollection.class);
+		when(classpath.iterator()).thenReturn(List.of(new File("/jarhc/a.jar")).iterator());
+		when(task.getClasspath()).thenReturn(classpath);
 
 		when(task.getProvided()).thenReturn(null);
 
@@ -223,10 +212,10 @@ class JarhcGradlePluginTest {
 
 		when(task.getReportFiles()).thenReturn(null);
 
-		when(task.createOptions(project, logger)).thenCallRealMethod();
+		when(task.createOptions(logger)).thenCallRealMethod();
 
 		// test
-		Options options = task.createOptions(project, logger);
+		Options options = task.createOptions(logger);
 
 		// assert
 		assertNotNull(options);
@@ -322,10 +311,10 @@ class JarhcGradlePluginTest {
 		when(reportFiles.iterator()).thenReturn(List.of(new File("/jarhc/report.html"), new File("/jarhc/report.txt")).iterator());
 		when(task.getReportFiles()).thenReturn(reportFiles);
 
-		when(task.createOptions(project, logger)).thenCallRealMethod();
+		when(task.createOptions(logger)).thenCallRealMethod();
 
 		// test
-		Options options = task.createOptions(project, logger);
+		Options options = task.createOptions(logger);
 
 		// assert
 		assertNotNull(options);
