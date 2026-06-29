@@ -1,0 +1,25 @@
+# Version catalog for the JarHC Gradle Plugin build.
+# https://docs.gradle.org/current/userguide/version_catalogs.html
+
+[versions]
+jarhc = "3.1.0"
+junit = "6.1.1"
+mockito = "5.23.0"
+ben-manes-versions = "0.54.0"
+plugin-publish = "2.1.1"
+shadow = "9.4.3"
+sonarqube = "7.3.1.8318"
+grgit = "5.3.3"
+
+[libraries]
+jarhc = { module = "org.jarhc:jarhc", version.ref = "jarhc" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+mockito-junit-jupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockito" }
+
+[plugins]
+versions = { id = "com.github.ben-manes.versions", version.ref = "ben-manes-versions" }
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
+grgit = { id = "org.ajoberstar.grgit", version.ref = "grgit" }

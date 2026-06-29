@@ -20,8 +20,15 @@ plugins {
 
     // Gradle Versions Plugin
     // https://github.com/ben-manes/gradle-versions-plugin
-    id("com.github.ben-manes.versions") version "0.54.0"
+    alias(libs.plugins.versions)
 
+}
+
+// lock the buildscript classpath (plugins) of root project
+buildscript {
+    configurations.classpath {
+        resolutionStrategy.activateDependencyLocking()
+    }
 }
 
 tasks {
@@ -34,6 +41,18 @@ tasks {
         }
     }
 
+    // Refresh all Gradle dependency lockfiles in one invocation: root project,
+    // every subproject, and their buildscript classpaths. New subprojects are
+    // picked up automatically, so there is no list to keep in sync.
+    // Usage: ./gradlew updateGradleLockfiles --write-locks
+    register("updateGradleLockfiles") {
+        group = "help"
+        description = "Resolves all dependencies of all projects to refresh the lockfiles (run with --write-locks)."
+        dependsOn(allprojects.flatMap { p ->
+            listOf(p.tasks.named("dependencies"), p.tasks.named("buildEnvironment"))
+        })
+    }
+
     dependencyUpdates {
         gradleReleaseChannel = "current"
         rejectVersionIf {
@@ -44,6 +63,11 @@ tasks {
 }
 
 allprojects {
+
+    // lock all dependency configurations in every project ---------------------
+    dependencyLocking {
+        lockAllConfigurations()
+    }
 
     // load user-specific properties -------------------------------------------
     val userPropertiesFile = file("${rootDir}/gradle.user.properties")
@@ -61,12 +85,31 @@ allprojects {
 
 }
 
+subprojects {
+
+    // lock the buildscript classpath (plugins) of every subproject ------------
+    buildscript {
+        configurations.classpath {
+            resolutionStrategy.activateDependencyLocking()
+        }
+    }
+
+}
+
 // special settings for IntelliJ IDEA
 idea {
     project {
         jdkName = "17"
         languageLevel = org.gradle.plugins.ide.idea.model.IdeaLanguageLevel(JavaVersion.VERSION_11)
         vcs = "Git"
+    }
+}
+
+// Fail fast if updateGradleLockfiles is run without --write-locks, instead of
+// silently resolving dependencies without rewriting the lockfiles.
+gradle.taskGraph.whenReady {
+    if (hasTask(":updateGradleLockfiles") && !gradle.startParameter.isWriteDependencyLocks) {
+        throw GradleException("Run with --write-locks: ./gradlew updateGradleLockfiles --write-locks")
     }
 }
 

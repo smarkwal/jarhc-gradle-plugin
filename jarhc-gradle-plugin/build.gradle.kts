@@ -23,16 +23,16 @@ plugins {
 
     // Gradle Publish plugin
     // https://plugins.gradle.org/docs/publish-plugin
-    id("com.gradle.plugin-publish") version "2.1.1"
+    alias(libs.plugins.plugin.publish)
 
     // Gradle Shadow plugin
-    id("com.gradleup.shadow") version "9.4.3"
+    alias(libs.plugins.shadow)
 
     // run Sonar analysis
-    id("org.sonarqube") version "7.3.1.8318"
+    alias(libs.plugins.sonarqube)
 
     // get current Git branch name
-    id("org.ajoberstar.grgit") version "5.3.3"
+    alias(libs.plugins.grgit)
 }
 
 // Preconditions based on which tasks should be executed -----------------------
@@ -53,8 +53,8 @@ gradle.taskGraph.whenReady {
 
 dependencies {
 
-    // JarHC 3.1.0
-    implementation("org.jarhc:jarhc:3.1.0")
+    // JarHC
+    implementation(libs.jarhc)
 
     // Gradle API
     // (this is required because the Gradle API dependency gets removed by the Shadow plugin)
@@ -62,9 +62,9 @@ dependencies {
     testImplementation(gradleApi())
 
     // JUnit and Mockito
-    testImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.23.0")
+    testImplementation(libs.junit.jupiter)
+    testRuntimeOnly(libs.junit.platform.launcher)
+    testImplementation(libs.mockito.junit.jupiter)
 }
 
 gradlePlugin {
@@ -201,10 +201,6 @@ tasks.named<Task>("check") {
 
 // JaCoCo coverage report
 val jacocoTestReportXml: String = "${layout.buildDirectory.get()}/reports/jacoco/test/report.xml"
-
-jacoco {
-    toolVersion = "0.8.10"
-}
 
 tasks.jacocoTestReport {
 
