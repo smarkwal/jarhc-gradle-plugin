@@ -1,4 +1,4 @@
-JarHC - JAR Health Check 3.0.0
+JarHC - JAR Health Check 3.1.0
 ==============================
 
 Load JAR files ...

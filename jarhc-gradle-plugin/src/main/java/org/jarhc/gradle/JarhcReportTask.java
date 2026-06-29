@@ -35,9 +35,13 @@ import org.gradle.api.tasks.TaskAction;
 import org.jarhc.app.Application;
 import org.jarhc.app.Options;
 import org.jarhc.artifacts.ArtifactFinder;
-import org.jarhc.artifacts.MavenArtifactFinder;
+import org.jarhc.artifacts.DepsDevApiArtifactFinder;
+import org.jarhc.artifacts.DepsDevApiVulnerabilityFinder;
+import org.jarhc.artifacts.DiskCacheArtifactFinder;
 import org.jarhc.artifacts.MavenRepository;
+import org.jarhc.artifacts.MemoryCacheArtifactFinder;
 import org.jarhc.artifacts.Repository;
+import org.jarhc.artifacts.VulnerabilityFinder;
 import org.jarhc.java.ClassLoaderStrategy;
 import org.slf4j.Logger;
 
@@ -234,13 +238,18 @@ public abstract class JarhcReportTask extends DefaultTask {
 		}
 
 		File cacheDir = new File(dataPath, "checksums");
-		ArtifactFinder artifactFinder = new MavenArtifactFinder(cacheDir, logger);
+		ArtifactFinder artifactFinder = new DepsDevApiArtifactFinder();
+		artifactFinder = new DiskCacheArtifactFinder(cacheDir, artifactFinder);
+		artifactFinder = new MemoryCacheArtifactFinder(artifactFinder);
+
+		VulnerabilityFinder vulnerabilityFinder = new DepsDevApiVulnerabilityFinder();
 
 		int javaVersion = options.getRelease();
 		Repository repository = new MavenRepository(javaVersion, options, dataPath, artifactFinder, logger);
 
 		Application application = new Application(logger);
 		application.setRepository(repository);
+		application.setVulnerabilityFinder(vulnerabilityFinder);
 
 		return application.run(options);
 	}
