@@ -15,16 +15,27 @@
  */
 package org.jarhc.gradle;
 
+import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
 import org.gradle.api.provider.Provider;
+import org.gradle.util.GradleVersion;
 
 public class JarhcGradlePlugin implements Plugin<Project> {
 
+	// minimum supported Gradle version
+	static final String MINIMUM_GRADLE_VERSION = "8.8";
+
+	@Override
 	public void apply(Project project) {
+
+		// fail fast with a clear message on unsupported Gradle versions
+		if (GradleVersion.current().compareTo(GradleVersion.version(MINIMUM_GRADLE_VERSION)) < 0) {
+			throw new GradleException("The JarHC Gradle plugin requires Gradle " + MINIMUM_GRADLE_VERSION + " or later.");
+		}
 
 		// register jarhcReport task
 		project.getTasks().register("jarhcReport", JarhcReportTask.class, task -> setDefaultConfiguration(task, project));

@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -36,11 +37,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 @SuppressWarnings("DuplicatedCode")
 class JarhcGradlePluginFunctionalTest {
 
-	// minimum supported Gradle version (keep in sync with README and docs)
-	static final String MINIMUM_GRADLE_VERSION = "8.8";
-
 	// sentinel for the Gradle version running this build (the Gradle wrapper)
 	private static final String CURRENT_GRADLE_VERSION = "current";
+
+	// a released Gradle version below JarhcGradlePlugin.MINIMUM_GRADLE_VERSION,
+	// used to verify the version guard; it does not need to track the minimum
+	private static final String BELOW_MINIMUM_GRADLE_VERSION = "8.7";
 
 	@TempDir
 	File projectDir;
@@ -54,7 +56,7 @@ class JarhcGradlePluginFunctionalTest {
 	}
 
 	@ParameterizedTest(name = "Gradle {0}")
-	@ValueSource(strings = { CURRENT_GRADLE_VERSION, MINIMUM_GRADLE_VERSION })
+	@ValueSource(strings = { CURRENT_GRADLE_VERSION, JarhcGradlePlugin.MINIMUM_GRADLE_VERSION })
 	void canRunTask_withDefaultConfig(String gradleVersion) throws IOException {
 
 		// prepare
@@ -86,7 +88,7 @@ class JarhcGradlePluginFunctionalTest {
 	}
 
 	@ParameterizedTest(name = "Gradle {0}")
-	@ValueSource(strings = { CURRENT_GRADLE_VERSION, MINIMUM_GRADLE_VERSION })
+	@ValueSource(strings = { CURRENT_GRADLE_VERSION, JarhcGradlePlugin.MINIMUM_GRADLE_VERSION })
 	void canRunTask_withFullConfig(String gradleVersion) throws IOException {
 
 		// prepare
@@ -112,6 +114,27 @@ class JarhcGradlePluginFunctionalTest {
 		String textReport = Files.readString(expectedTextReportPath);
 		assertEquals(expectedTextReport, textReport);
 		System.out.println(textReport);
+	}
+
+	@Test
+	void failsWithClearMessageBelowMinimumGradleVersion() throws IOException {
+
+		// prepare: a minimal project that applies the plugin
+		String projectPath = "projects/default-config";
+		writeTextFile(getSettingsFile(), readTextResource(projectPath + "/settings.gradle.kts"));
+		writeTextFile(getBuildFile(), readTextResource(projectPath + "/build.gradle.kts"));
+
+		// test: run against a Gradle version below the minimum supported version
+		BuildResult result = GradleRunner.create()
+				.forwardOutput()
+				.withPluginClasspath()
+				.withGradleVersion(BELOW_MINIMUM_GRADLE_VERSION)
+				.withArguments("jarhcReport")
+				.withProjectDir(projectDir)
+				.buildAndFail();
+
+		// assert: clear message instead of a cryptic NoSuchMethodError
+		assertTrue(result.getOutput().contains("requires Gradle " + JarhcGradlePlugin.MINIMUM_GRADLE_VERSION + " or later"));
 	}
 
 	private BuildResult runTask(String gradleVersion) {

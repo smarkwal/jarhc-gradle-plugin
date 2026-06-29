@@ -20,7 +20,7 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 - Plugin bytecode: Java 11.
 - Tests run on: Java 17 (Gradle 9 TestKit requires it).
 - Gradle wrapper: 9.6.1 (requires Java 17 to run).
-- Minimum supported Gradle: 8.8 (`MINIMUM_GRADLE_VERSION` in the functional test).
+- Minimum supported Gradle: 8.8 (`MINIMUM_GRADLE_VERSION` in `JarhcGradlePlugin`).
 
 ## Compatibility (enforced by the functional tests)
 
