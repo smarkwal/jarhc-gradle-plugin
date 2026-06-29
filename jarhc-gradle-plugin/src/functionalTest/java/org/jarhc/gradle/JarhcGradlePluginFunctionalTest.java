@@ -109,7 +109,10 @@ class JarhcGradlePluginFunctionalTest {
 		GradleRunner runner = GradleRunner.create();
 		runner.forwardOutput();
 		runner.withPluginClasspath();
-		runner.withArguments("jarhcReport", "--stacktrace"); // "--info"
+		// --warning-mode=all surfaces Gradle deprecations; --configuration-cache fails
+		// the build on any configuration cache violation, guarding against regressions
+		// (e.g. accessing Task.project at execution time) that break Gradle 10 compatibility
+		runner.withArguments("jarhcReport", "--stacktrace", "--warning-mode=all", "--configuration-cache"); // "--info"
 		runner.withProjectDir(projectDir);
 		return runner.build();
 	}

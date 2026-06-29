@@ -46,9 +46,15 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		Provider<RegularFile> textReportFile = buildDir.file("reports/jarhc/jarhc-report.txt");
 
 		// apply default configuration
-		task.getClasspath().setFrom();
-		task.getProvided().setFrom();
-		task.getRuntime().setFrom();
+		// default the classpath to the project's runtime classpath, wired at
+		// configuration time so the task never accesses Task.project at execution
+		// time (which is deprecated and removed for the configuration cache).
+		// convention() is used instead of setFrom() so an explicit classpath
+		// configured on the task always wins, regardless of plugin apply order.
+		project.getPluginManager().withPlugin("java", plugin ->
+				task.getClasspath().convention(project.getConfigurations().named("runtimeClasspath")));
+		// provided and runtime are left at their default (empty) instead of being
+		// set explicitly, so configuration on the task is never overwritten
 		task.getSections().empty();
 		task.getSkipEmpty().set(false);
 		task.getSortRows().set(false);
