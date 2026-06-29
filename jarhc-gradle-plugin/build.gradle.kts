@@ -134,8 +134,12 @@ tasks.build {
 // tests -----------------------------------------------------------------------
 
 // source set for the functional test suite
-val functionalTestSourceSet = sourceSets.create("functionalTest") {
-}
+val functionalTestSourceSet = sourceSets.create("functionalTest")
+
+// compile and run the functional tests against the plugin's main classes so they
+// can reference constants such as JarhcGradlePlugin.MINIMUM_GRADLE_VERSION
+functionalTestSourceSet.compileClasspath += sourceSets["main"].output
+functionalTestSourceSet.runtimeClasspath += sourceSets["main"].output
 
 configurations["functionalTestImplementation"].extendsFrom(configurations["testImplementation"])
 configurations["functionalTestRuntimeOnly"].extendsFrom(configurations["testRuntimeOnly"])
