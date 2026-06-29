@@ -16,6 +16,11 @@ on:
 permissions:
   contents: write
 
+# cancel superseded runs on the same branch (different branches run in parallel)
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   dependency-graph:
     runs-on: ubuntu-latest
@@ -37,4 +42,7 @@ jobs:
       uses: gradle/actions/dependency-submission@3f131e8634966bd73d06cc69884922b02e6faf92 # v6.2.0
       with:
         cache-provider: 'basic'
+        # only the Build workflow writes the Gradle cache; reading here avoids
+        # racing it for the same cache key when both run on the same push
+        cache-read-only: true
         dependency-graph: ${{ github.event.inputs.dependencyGraphAction || 'generate-and-submit' }}
