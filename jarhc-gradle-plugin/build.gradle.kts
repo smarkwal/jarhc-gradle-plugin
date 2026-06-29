@@ -28,7 +28,7 @@ plugins {
     id("com.github.johnrengelman.shadow") version "8.1.1"
 
     // run Sonar analysis
-    id("org.sonarqube") version "6.1.0.5360"
+    id("org.sonarqube") version "7.3.1.8318"
 
     // get current Git branch name
     id("org.ajoberstar.grgit") version "5.3.0"
@@ -247,7 +247,16 @@ sonar {
         property("sonar.projectKey", "smarkwal_jarhc-gradle-plugin")
 
         // Git branch
-        property("sonar.branch.name", getGitBranchName())
+        val sonarBranchName = getGitBranchName()
+        property("sonar.branch.name", sonarBranchName)
+
+        // target Git branch for merge
+        if (sonarBranchName != "main") {
+            // https://docs.sonarsource.com/sonarqube-cloud/enriching/branch-analysis-setup/
+            property("sonar.branch.target", "main")
+            // https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/analysis-parameters/
+            property("sonar.newCode.referenceBranch", "main")
+        }
 
         // paths to test sources and test classes
         property("sonar.tests", "${projectDir}/src/test/java,${projectDir}/src/functionalTest/java")
