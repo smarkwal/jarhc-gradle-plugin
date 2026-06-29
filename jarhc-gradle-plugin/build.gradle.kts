@@ -60,10 +60,10 @@ dependencies {
     api(gradleApi())
     testImplementation(gradleApi())
 
-    // JUnit 5 and Mockito
-    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    // JUnit and Mockito
+    testImplementation("org.junit.jupiter:junit-jupiter:6.1.1")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testImplementation("org.mockito:mockito-junit-jupiter:5.17.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.23.0")
 }
 
 gradlePlugin {
