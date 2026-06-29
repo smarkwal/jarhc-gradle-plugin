@@ -16,13 +16,14 @@
 
 plugins {
     `java-gradle-plugin`
+    idea
     jacoco
     signing
     `maven-publish`
 
     // Gradle Publish plugin
     // https://plugins.gradle.org/docs/publish-plugin
-    id("com.gradle.plugin-publish") version "1.3.1"
+    id("com.gradle.plugin-publish") version "2.1.1"
 
     // Gradle Shadow plugin
     id("com.gradleup.shadow") version "9.4.3"
@@ -67,8 +68,6 @@ dependencies {
 }
 
 gradlePlugin {
-
-    @Suppress("UnstableApiUsage")
     plugins {
         website.set("https://github.com/smarkwal/jarhc-gradle-plugin")
         vcsUrl.set("https://github.com/smarkwal/jarhc-gradle-plugin.git")
