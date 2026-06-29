@@ -29,6 +29,7 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 	// minimum supported Gradle version
 	static final String MINIMUM_GRADLE_VERSION = "8.8";
 
+	@Override
 	public void apply(Project project) {
 
 		// fail fast with a clear message on unsupported Gradle versions
