@@ -16,11 +16,13 @@ Gradle plugin to generate a [JarHC - JAR Health Check](https://jarhc.org) report
 
 ## Installation
 
+The plugin requires **Gradle 8.8** or later.
+
 Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block) for Kotlin:
 
 ```kotlin
 plugins {
-    id("org.jarhc") version "1.2.0"
+    id("org.jarhc") version "3.1.0"
 }
 ```
 

@@ -29,11 +29,18 @@ import java.nio.file.Path;
 import org.gradle.internal.impldep.org.apache.commons.io.IOUtils;
 import org.gradle.testkit.runner.BuildResult;
 import org.gradle.testkit.runner.GradleRunner;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @SuppressWarnings("DuplicatedCode")
 class JarhcGradlePluginFunctionalTest {
+
+	// minimum supported Gradle version (keep in sync with README and docs)
+	static final String MINIMUM_GRADLE_VERSION = "8.8";
+
+	// sentinel for the Gradle version running this build (the Gradle wrapper)
+	private static final String CURRENT_GRADLE_VERSION = "current";
 
 	@TempDir
 	File projectDir;
@@ -46,8 +53,9 @@ class JarhcGradlePluginFunctionalTest {
 		return new File(projectDir, "settings.gradle.kts");
 	}
 
-	@Test
-	void canRunTask_withDefaultConfig() throws IOException {
+	@ParameterizedTest(name = "Gradle {0}")
+	@ValueSource(strings = { CURRENT_GRADLE_VERSION, MINIMUM_GRADLE_VERSION })
+	void canRunTask_withDefaultConfig(String gradleVersion) throws IOException {
 
 		// prepare
 		String projectPath = "projects/default-config";
@@ -60,7 +68,7 @@ class JarhcGradlePluginFunctionalTest {
 		String expectedTextReport = readTextResource(projectPath + "/expected-report.txt");
 
 		// test
-		BuildResult result = runTask();
+		BuildResult result = runTask(gradleVersion);
 
 		// assert
 		String output = result.getOutput();
@@ -77,8 +85,9 @@ class JarhcGradlePluginFunctionalTest {
 		System.out.println(textReport);
 	}
 
-	@Test
-	void canRunTask_withFullConfig() throws IOException {
+	@ParameterizedTest(name = "Gradle {0}")
+	@ValueSource(strings = { CURRENT_GRADLE_VERSION, MINIMUM_GRADLE_VERSION })
+	void canRunTask_withFullConfig(String gradleVersion) throws IOException {
 
 		// prepare
 		String projectPath = "projects/full-config";
@@ -91,7 +100,7 @@ class JarhcGradlePluginFunctionalTest {
 		String expectedTextReport = readTextResource(projectPath + "/expected-report.txt");
 
 		// test
-		BuildResult result = runTask();
+		BuildResult result = runTask(gradleVersion);
 
 		// assert
 		String output = result.getOutput();
@@ -105,10 +114,15 @@ class JarhcGradlePluginFunctionalTest {
 		System.out.println(textReport);
 	}
 
-	private BuildResult runTask() {
+	private BuildResult runTask(String gradleVersion) {
 		GradleRunner runner = GradleRunner.create();
 		runner.forwardOutput();
 		runner.withPluginClasspath();
+		// run against the minimum supported Gradle version as well as the current
+		// one, so the documented floor stays honest as the code evolves
+		if (!CURRENT_GRADLE_VERSION.equals(gradleVersion)) {
+			runner.withGradleVersion(gradleVersion);
+		}
 		// --warning-mode=all surfaces Gradle deprecations; --configuration-cache fails
 		// the build on any configuration cache violation, guarding against regressions
 		// (e.g. accessing Task.project at execution time) that break Gradle 10 compatibility
