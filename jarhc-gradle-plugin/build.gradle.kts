@@ -31,7 +31,7 @@ plugins {
     id("org.sonarqube") version "7.3.1.8318"
 
     // get current Git branch name
-    id("org.ajoberstar.grgit") version "5.3.0"
+    id("org.ajoberstar.grgit") version "5.3.3"
 }
 
 // Preconditions based on which tasks should be executed -----------------------
