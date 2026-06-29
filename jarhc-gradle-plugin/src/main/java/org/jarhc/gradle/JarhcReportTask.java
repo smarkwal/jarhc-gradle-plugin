@@ -27,11 +27,12 @@ import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
+import org.gradle.api.tasks.Classpath;
 import org.gradle.api.tasks.Input;
-import org.gradle.api.tasks.InputFiles;
 import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.OutputFiles;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.work.DisableCachingByDefault;
 import org.jarhc.app.Application;
 import org.jarhc.app.Options;
 import org.jarhc.artifacts.ArtifactFinder;
@@ -45,15 +46,16 @@ import org.jarhc.artifacts.VulnerabilityFinder;
 import org.jarhc.java.ClassLoaderStrategy;
 import org.slf4j.Logger;
 
+@DisableCachingByDefault(because = "JarHC report generation performs network lookups and is not worth caching")
 public abstract class JarhcReportTask extends DefaultTask {
 
-	@InputFiles
+	@Classpath
 	public abstract ConfigurableFileCollection getClasspath();
 
-	@InputFiles
+	@Classpath
 	public abstract ConfigurableFileCollection getProvided();
 
-	@InputFiles
+	@Classpath
 	public abstract ConfigurableFileCollection getRuntime();
 
 	@Input

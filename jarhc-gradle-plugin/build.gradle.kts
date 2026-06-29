@@ -103,6 +103,17 @@ java {
     withJavadocJar()
 }
 
+// The plugin must remain compatible with Java 11, so the main sources are
+// compiled with the Java 11 toolchain above. The unit and functional tests use
+// Gradle test fixtures (e.g. ProjectBuilder) that ship as Java 17 bytecode in
+// Gradle 9, so the test sources are compiled and executed with Java 17.
+val testJavaVersion = JavaLanguageVersion.of(17)
+
+tasks.withType<JavaCompile>().matching { it.name.endsWith("TestJava") }.configureEach {
+    javaCompiler.set(javaToolchains.compilerFor { languageVersion.set(testJavaVersion) })
+    options.release.set(17)
+}
+
 // special settings for IntelliJ IDEA
 idea {
     module {
@@ -131,7 +142,7 @@ configurations["functionalTestImplementation"].extendsFrom(configurations["testI
 configurations["functionalTestRuntimeOnly"].extendsFrom(configurations["testRuntimeOnly"])
 
 // task to run the functional tests
-val functionalTest by tasks.registering(Test::class) {
+val functionalTest = tasks.register<Test>("functionalTest") {
     testClassesDirs = functionalTestSourceSet.output.classesDirs
     classpath = functionalTestSourceSet.runtimeClasspath
     shouldRunAfter("test")
@@ -139,7 +150,13 @@ val functionalTest by tasks.registering(Test::class) {
 
 gradlePlugin.testSourceSets(functionalTestSourceSet)
 
+// 'jarhc.*' Gradle properties to pass as system properties to the JUnit JVM
+val jarhcProperties = providers.gradlePropertiesPrefixedBy("jarhc.")
+
 tasks.withType(Test::class) {
+
+    // run tests on Java 17 (Gradle 9 test fixtures require Java 17)
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(testJavaVersion) })
 
     // skip tests if property "skip.tests" is set
     onlyIf { !skipTests }
@@ -148,10 +165,8 @@ tasks.withType(Test::class) {
     useJUnitPlatform()
 
     // pass all 'jarhc.*' Gradle properties as system properties to JUnit JVM
-    properties.forEach {
-        if (it.key.startsWith("jarhc.")) {
-            systemProperty(it.key, it.value.toString())
-        }
+    jarhcProperties.get().forEach { (key, value) ->
+        systemProperty(key, value)
     }
 
     // settings
