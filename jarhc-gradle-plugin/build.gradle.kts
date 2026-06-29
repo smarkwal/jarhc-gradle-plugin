@@ -163,7 +163,7 @@ tasks.withType(Test::class) {
     // skip tests if property "skip.tests" is set
     onlyIf { !skipTests }
 
-    // use JUnit 5
+    // use JUnit
     useJUnitPlatform()
 
     // pass all 'jarhc.*' Gradle properties as system properties to JUnit JVM
