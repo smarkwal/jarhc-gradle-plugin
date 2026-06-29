@@ -202,10 +202,6 @@ tasks.named<Task>("check") {
 // JaCoCo coverage report
 val jacocoTestReportXml: String = "${layout.buildDirectory.get()}/reports/jacoco/test/report.xml"
 
-jacoco {
-    toolVersion = "0.8.10"
-}
-
 tasks.jacocoTestReport {
 
     // run all tests first
