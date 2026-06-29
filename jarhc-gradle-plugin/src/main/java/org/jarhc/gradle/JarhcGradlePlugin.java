@@ -53,8 +53,8 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		// configured on the task always wins, regardless of plugin apply order.
 		project.getPluginManager().withPlugin("java", plugin ->
 				task.getClasspath().convention(project.getConfigurations().named("runtimeClasspath")));
-		task.getProvided().setFrom();
-		task.getRuntime().setFrom();
+		// provided and runtime are left at their default (empty) instead of being
+		// set explicitly, so configuration on the task is never overwritten
 		task.getSections().empty();
 		task.getSkipEmpty().set(false);
 		task.getSortRows().set(false);
