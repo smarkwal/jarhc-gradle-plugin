@@ -1,8 +1,8 @@
 # JarHC Gradle Plugin
 
-Gradle plugin to generate a [JarHC - JAR Health Check](https://github.com/smarkwal/jarhc) report for your project's dependencies.
+Gradle plugin to generate a [JarHC - JAR Health Check](https://jarhc.org) report for your project's dependencies.
 
-![JarHC Logo](https://github.com/smarkwal/jarhc/blob/master/docs/jarhc-logo.png?raw=true)
+![JarHC Logo](https://jarhc.org/latest/assets/jarhc-logo.png)
 
 [![License](https://img.shields.io/github/license/smarkwal/jarhc-gradle-plugin?label=License)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Release](https://img.shields.io/github/v/release/smarkwal/jarhc-gradle-plugin?label=Latest)](https://github.com/smarkwal/jarhc-gradle-plugin/releases/latest)
