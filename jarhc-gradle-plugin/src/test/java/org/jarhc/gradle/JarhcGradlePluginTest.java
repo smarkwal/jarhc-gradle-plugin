@@ -161,9 +161,9 @@ class JarhcGradlePluginTest {
 		when(ignoreMissingAnnotations.isPresent()).thenReturn(false);
 		when(parameters.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
 
-		Property<Boolean> ignoreExactCopt = mock(Property.class);
-		when(ignoreExactCopt.isPresent()).thenReturn(false);
-		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopt);
+		Property<Boolean> ignoreExactCopy = mock(Property.class);
+		when(ignoreExactCopy.isPresent()).thenReturn(false);
+		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopy);
 
 		Directory directory = mock(Directory.class);
 		when(directory.getAsFile()).thenReturn(new File("/jarhc/data"));
@@ -243,10 +243,10 @@ class JarhcGradlePluginTest {
 		when(ignoreMissingAnnotations.get()).thenReturn(true);
 		when(parameters.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
 
-		Property<Boolean> ignoreExactCopt = mock(Property.class);
-		when(ignoreExactCopt.isPresent()).thenReturn(true);
-		when(ignoreExactCopt.get()).thenReturn(true);
-		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopt);
+		Property<Boolean> ignoreExactCopy = mock(Property.class);
+		when(ignoreExactCopy.isPresent()).thenReturn(true);
+		when(ignoreExactCopy.get()).thenReturn(true);
+		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopy);
 
 		Directory directory = mock(Directory.class);
 		when(directory.getAsFile()).thenReturn(new File("/jarhc/data"));
