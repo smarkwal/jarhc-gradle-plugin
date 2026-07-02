@@ -25,9 +25,6 @@ plugins {
     // https://plugins.gradle.org/docs/publish-plugin
     alias(libs.plugins.plugin.publish)
 
-    // Gradle Shadow plugin
-    alias(libs.plugins.shadow)
-
     // run Sonar analysis
     alias(libs.plugins.sonarqube)
 
@@ -53,12 +50,13 @@ gradle.taskGraph.whenReady {
 
 dependencies {
 
-    // JarHC
-    implementation(libs.jarhc)
+    // JarHC is compiled against but NOT bundled into the plugin jar. At the
+    // consumer's build time it is resolved by the plugin's 'jarhc' configuration
+    // and executed in an isolated worker classloader (see JarhcGradlePlugin).
+    compileOnly(libs.jarhc)
+    testImplementation(libs.jarhc)
 
-    // Gradle API
-    // (this is required because the Gradle API dependency gets removed by the Shadow plugin)
-    api(gradleApi())
+    // Gradle API on the test runtime classpath (e.g. ProjectBuilder)
     testImplementation(gradleApi())
 
     // JUnit and Mockito
@@ -92,7 +90,7 @@ val skipTests: Boolean = project.hasProperty("skip.tests")
 java {
 
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(11))
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 
     // automatically package source code as artifact -sources.jar
@@ -102,14 +100,18 @@ java {
     withJavadocJar()
 }
 
-// The plugin must remain compatible with Java 11, so the main sources are
-// compiled with the Java 11 toolchain above. The unit and functional tests use
-// Gradle test fixtures (e.g. ProjectBuilder) that ship as Java 17 bytecode in
-// Gradle 9, so the test sources are compiled and executed with Java 17.
-val testJavaVersion = JavaLanguageVersion.of(17)
+// The plugin bytecode must remain Java 11 compatible, but it is compiled with the
+// Java 17 toolchain above (targeting Java 11 via --release below). The Java 17
+// toolchain is required because parts of the Gradle 9 API the plugin references
+// (e.g. the worker API) ship as Java 17 bytecode, which a Java 11 compiler cannot
+// read; --release 11 still emits Java 11 bytecode. The unit and functional tests
+// additionally use Gradle test fixtures (e.g. ProjectBuilder) that require Java 17,
+// so the test sources target Java 17.
+tasks.named<JavaCompile>("compileJava") {
+    options.release.set(11)
+}
 
 tasks.withType<JavaCompile>().matching { it.name.endsWith("TestJava") }.configureEach {
-    javaCompiler.set(javaToolchains.compilerFor { languageVersion.set(testJavaVersion) })
     options.release.set(17)
 }
 
@@ -119,16 +121,6 @@ idea {
         testSources.from("src/functionalTest/java")
         testResources.from("src/functionalTest/resources")
     }
-}
-
-// build -----------------------------------------------------------------------
-
-tasks.shadowJar {
-    archiveClassifier.set("")
-}
-
-tasks.build {
-    dependsOn(tasks.shadowJar)
 }
 
 // tests -----------------------------------------------------------------------
@@ -161,7 +153,7 @@ val jarhcProperties = providers.gradlePropertiesPrefixedBy("jarhc.")
 tasks.withType(Test::class) {
 
     // run tests on Java 17 (Gradle 9 test fixtures require Java 17)
-    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(testJavaVersion) })
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(17)) })
 
     // skip tests if property "skip.tests" is set
     onlyIf { !skipTests }

@@ -18,6 +18,7 @@ package org.jarhc.gradle;
 import org.gradle.api.GradleException;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.RegularFile;
@@ -29,6 +30,15 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 	// minimum supported Gradle version
 	static final String MINIMUM_GRADLE_VERSION = "8.8";
 
+	// Default version of JarHC resolved into the 'jarhc' configuration. Keep in
+	// sync with the 'jarhc' version in gradle/libs.versions.toml (which the plugin
+	// itself compiles against). Users can override it by adding their own
+	// 'org.jarhc:jarhc' dependency to the 'jarhc' configuration.
+	static final String DEFAULT_JARHC_VERSION = "3.1.0";
+
+	// name of the configuration that carries the JarHC tool classpath
+	static final String JARHC_CONFIGURATION_NAME = "jarhc";
+
 	@Override
 	public void apply(Project project) {
 
@@ -37,8 +47,27 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 			throw new GradleException("The JarHC Gradle plugin requires Gradle " + MINIMUM_GRADLE_VERSION + " or later.");
 		}
 
+		// resolvable configuration holding JarHC and its dependencies; run in an
+		// isolated worker classloader so they never leak onto the plugin classpath
+		Configuration jarhcConfiguration = createJarhcConfiguration(project);
+
 		// register jarhcReport task
-		project.getTasks().register("jarhcReport", JarhcReportTask.class, task -> setDefaultConfiguration(task, project));
+		project.getTasks().register("jarhcReport", JarhcReportTask.class, task -> {
+			task.getJarhcClasspath().from(jarhcConfiguration);
+			setDefaultConfiguration(task, project);
+		});
+	}
+
+	private static Configuration createJarhcConfiguration(Project project) {
+		Configuration configuration = project.getConfigurations().create(JARHC_CONFIGURATION_NAME);
+		configuration.setDescription("The JarHC tool classpath used to generate reports.");
+		configuration.setVisible(false);
+		configuration.setCanBeConsumed(false);
+		configuration.setCanBeResolved(true);
+		// default to the bundled JarHC version unless the user declares their own
+		configuration.defaultDependencies(dependencies ->
+				dependencies.add(project.getDependencies().create("org.jarhc:jarhc:" + DEFAULT_JARHC_VERSION)));
+		return configuration;
 	}
 
 	private static void setDefaultConfiguration(JarhcReportTask task, Project project) {

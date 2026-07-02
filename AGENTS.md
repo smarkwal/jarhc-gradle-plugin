@@ -18,6 +18,7 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 ## Java and Gradle versions
 
 - Plugin bytecode: Java 11.
+- Main sources: Java 17 toolchain, `--release 11` (Java 11 cannot read Gradle 9's Java 17 worker API classes).
 - Tests run on: Java 17 (Gradle 9 TestKit requires it).
 - Gradle wrapper: 9.6.1 (requires Java 17 to run).
 - Minimum supported Gradle: 8.8 (`MINIMUM_GRADLE_VERSION` in `JarhcGradlePlugin`).
@@ -31,6 +32,8 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 
 ## Dependencies
 
+- JarHC is not bundled: `compileOnly(libs.jarhc)`. It is resolved by the `jarhc` configuration and run in an isolated worker classloader (`JarhcWorkAction`), off the plugin classpath.
+- Keep `DEFAULT_JARHC_VERSION` (`JarhcGradlePlugin`) in sync with the `jarhc` catalog version.
 - Versions live in the version catalog: `gradle/libs.versions.toml`.
 - Check for updates: `./gradlew dependencyUpdates`.
 - After changing any version, refresh the lockfiles: `./gradlew updateGradleLockfiles --write-locks`.

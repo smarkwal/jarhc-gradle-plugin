@@ -17,10 +17,12 @@ package org.jarhc.gradle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,7 +30,6 @@ import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.List;
-import org.gradle.api.GradleException;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.ConfigurableFileCollection;
@@ -40,13 +41,13 @@ import org.gradle.api.provider.ListProperty;
 import org.gradle.api.provider.Property;
 import org.gradle.api.tasks.TaskContainer;
 import org.gradle.testfixtures.ProjectBuilder;
+import org.gradle.workers.WorkQueue;
+import org.gradle.workers.WorkerExecutor;
 import org.jarhc.app.Options;
 import org.jarhc.java.ClassLoaderStrategy;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -55,20 +56,6 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.LENIENT)
 @SuppressWarnings("unchecked")
 class JarhcGradlePluginTest {
-
-	@Mock
-	Logger logger;
-
-	@Mock
-	JarhcReportTask task;
-
-	@BeforeEach
-	void setUp() {
-
-		// setup: task
-		when(task.getLogger()).thenReturn(logger);
-
-	}
 
 	@Test
 	void apply() {
@@ -81,53 +68,45 @@ class JarhcGradlePluginTest {
 		// test
 		plugins.apply("org.jarhc");
 
-		// assert
+		// assert: task
 		Task task = tasks.findByName("jarhcReport");
 		assertNotNull(task);
-		assertTrue(task instanceof JarhcReportTask);
+		assertInstanceOf(JarhcReportTask.class, task);
 		assertEquals("verification", task.getGroup());
 		assertEquals("Generates a JarHC report.", task.getDescription());
 		assertTrue(task.getDependsOn().isEmpty());
+
+		// assert: 'jarhc' configuration with the default JarHC dependency
+		assertNotNull(project.getConfigurations().findByName(JarhcGradlePlugin.JARHC_CONFIGURATION_NAME));
 	}
 
 	@Test
-	void run() {
-
-		// prepare: options
-		Options options = new Options();
+	void run_submitsWorkToIsolatedWorker() {
 
 		// prepare: task
-		when(task.createOptions(logger)).thenReturn(options);
-		when(task.runJarHC(options, logger)).thenReturn(0);
+		JarhcReportTask task = mock(JarhcReportTask.class);
+		Logger logger = mock(Logger.class);
+		when(task.getLogger()).thenReturn(logger);
+
+		// the deprecated options are queried before submitting the work
+		when(task.getSortRows()).thenReturn(mock(Property.class));
+		when(task.getRemoveVersion()).thenReturn(mock(Property.class));
+		when(task.getUseArtifactName()).thenReturn(mock(Property.class));
+
+		// prepare: worker executor
+		WorkerExecutor workerExecutor = mock(WorkerExecutor.class);
+		WorkQueue workQueue = mock(WorkQueue.class);
+		when(task.getWorkerExecutor()).thenReturn(workerExecutor);
+		when(workerExecutor.classLoaderIsolation(any())).thenReturn(workQueue);
+
 		doCallRealMethod().when(task).run();
 
 		// test
 		task.run();
 
-		// verify
-		verify(logger).info("JarHC Report Task");
-		verify(task).runJarHC(options, logger);
-		verify(logger).info("JarHC exit code: {}", 0);
-	}
-
-	@Test
-	void run_throwsGradleException_whenExitCodeIsNotZero() {
-
-		// prepare: options
-		Options options = new Options();
-
-		// prepare: task
-		when(task.createOptions(logger)).thenReturn(options);
-		when(task.runJarHC(options, logger)).thenReturn(123);
-		doCallRealMethod().when(task).run();
-
-		// test
-		assertThrows(GradleException.class, () -> task.run());
-
-		// verify
-		verify(logger).info("JarHC Report Task");
-		verify(task).runJarHC(options, logger);
-		verify(logger).info("JarHC exit code: {}", 123);
+		// verify: work submitted to an isolated worker classloader
+		verify(workerExecutor).classLoaderIsolation(any());
+		verify(workQueue).submit(eq(JarhcWorkAction.class), any());
 	}
 
 	@Test
@@ -140,11 +119,8 @@ class JarhcGradlePluginTest {
 		options.setDataPath(dataDir.getAbsolutePath());
 		options.addReportFile(reportFile.getAbsolutePath());
 
-		// prepare: task
-		when(task.runJarHC(options, logger)).thenCallRealMethod();
-
 		// test
-		int exitCode = task.runJarHC(options, logger);
+		int exitCode = JarhcRunner.runJarHC(options, mock(Logger.class));
 
 		// assert
 		assertEquals(0, exitCode);
@@ -154,68 +130,56 @@ class JarhcGradlePluginTest {
 	@Test
 	void createOptions_withDefaultConfig() {
 
-		// prepare: task
+		// prepare: work parameters
+		JarhcWorkParameters parameters = mock(JarhcWorkParameters.class);
+
 		ConfigurableFileCollection classpath = mock(ConfigurableFileCollection.class);
 		when(classpath.iterator()).thenReturn(List.of(new File("/jarhc/a.jar")).iterator());
-		when(task.getClasspath()).thenReturn(classpath);
+		when(parameters.getClasspath()).thenReturn(classpath);
 
-		when(task.getProvided()).thenReturn(null);
+		when(parameters.getProvided()).thenReturn(null);
 
-		when(task.getRuntime()).thenReturn(null);
+		when(parameters.getRuntime()).thenReturn(null);
 
 		ListProperty<String> sections = mock(ListProperty.class);
 		when(sections.isPresent()).thenReturn(false);
-		when(task.getSections()).thenReturn(sections);
+		when(parameters.getSections()).thenReturn(sections);
 
 		Property<Boolean> skipEmpty = mock(Property.class);
 		when(skipEmpty.isPresent()).thenReturn(false);
-		when(task.getSkipEmpty()).thenReturn(skipEmpty);
-
-		Property<Boolean> sortRows = mock(Property.class);
-		when(sortRows.isPresent()).thenReturn(false);
-		when(task.getSortRows()).thenReturn(sortRows);
+		when(parameters.getSkipEmpty()).thenReturn(skipEmpty);
 
 		Property<Integer> release = mock(Property.class);
 		when(release.isPresent()).thenReturn(false);
-		when(task.getRelease()).thenReturn(release);
+		when(parameters.getRelease()).thenReturn(release);
 
 		Property<String> strategy = mock(Property.class);
 		when(strategy.isPresent()).thenReturn(false);
-		when(task.getStrategy()).thenReturn(strategy);
-
-		Property<Boolean> removeVersion = mock(Property.class);
-		when(removeVersion.isPresent()).thenReturn(false);
-		when(task.getRemoveVersion()).thenReturn(removeVersion);
-
-		Property<Boolean> useArtifactName = mock(Property.class);
-		when(useArtifactName.isPresent()).thenReturn(false);
-		when(task.getUseArtifactName()).thenReturn(useArtifactName);
+		when(parameters.getStrategy()).thenReturn(strategy);
 
 		Property<Boolean> ignoreMissingAnnotations = mock(Property.class);
 		when(ignoreMissingAnnotations.isPresent()).thenReturn(false);
-		when(task.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
+		when(parameters.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
 
-		Property<Boolean> ignoreExactCopt = mock(Property.class);
-		when(ignoreExactCopt.isPresent()).thenReturn(false);
-		when(task.getIgnoreExactCopy()).thenReturn(ignoreExactCopt);
+		Property<Boolean> ignoreExactCopy = mock(Property.class);
+		when(ignoreExactCopy.isPresent()).thenReturn(false);
+		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopy);
 
 		Directory directory = mock(Directory.class);
 		when(directory.getAsFile()).thenReturn(new File("/jarhc/data"));
 		DirectoryProperty dataDir = mock(DirectoryProperty.class);
 		when(dataDir.isPresent()).thenReturn(true);
 		when(dataDir.get()).thenReturn(directory);
-		when(task.getDataDir()).thenReturn(dataDir);
+		when(parameters.getDataDir()).thenReturn(dataDir);
 
 		Property<String> reportTitle = mock(Property.class);
 		when(reportTitle.isPresent()).thenReturn(false);
-		when(task.getReportTitle()).thenReturn(reportTitle);
+		when(parameters.getReportTitle()).thenReturn(reportTitle);
 
-		when(task.getReportFiles()).thenReturn(null);
-
-		when(task.createOptions(logger)).thenCallRealMethod();
+		when(parameters.getReportFiles()).thenReturn(null);
 
 		// test
-		Options options = task.createOptions(logger);
+		Options options = JarhcRunner.createOptions(parameters, mock(Logger.class));
 
 		// assert
 		assertNotNull(options);
@@ -237,84 +201,72 @@ class JarhcGradlePluginTest {
 	@Test
 	void createOptions_withFullConfig() {
 
-		// prepare: task
+		// prepare: work parameters
+		JarhcWorkParameters parameters = mock(JarhcWorkParameters.class);
+
 		ConfigurableFileCollection classpath = mock(ConfigurableFileCollection.class);
 		when(classpath.iterator()).thenReturn(List.of(new File("/jarhc/a.jar")).iterator());
-		when(task.getClasspath()).thenReturn(classpath);
+		when(parameters.getClasspath()).thenReturn(classpath);
 
 		ConfigurableFileCollection provided = mock(ConfigurableFileCollection.class);
+		when(provided.isEmpty()).thenReturn(false);
 		when(provided.iterator()).thenReturn(List.of(new File("/jarhc/b.jar")).iterator());
-		when(task.getProvided()).thenReturn(provided);
+		when(parameters.getProvided()).thenReturn(provided);
 
 		ConfigurableFileCollection runtime = mock(ConfigurableFileCollection.class);
+		when(runtime.isEmpty()).thenReturn(false);
 		when(runtime.iterator()).thenReturn(List.of(new File("/jarhc/c.jar")).iterator());
-		when(task.getRuntime()).thenReturn(runtime);
+		when(parameters.getRuntime()).thenReturn(runtime);
 
 		ListProperty<String> sections = mock(ListProperty.class);
 		when(sections.isPresent()).thenReturn(true);
 		when(sections.get()).thenReturn(List.of("jf", "bl"));
-		when(task.getSections()).thenReturn(sections);
+		when(parameters.getSections()).thenReturn(sections);
 
 		Property<Boolean> skipEmpty = mock(Property.class);
 		when(skipEmpty.isPresent()).thenReturn(true);
 		when(skipEmpty.get()).thenReturn(true);
-		when(task.getSkipEmpty()).thenReturn(skipEmpty);
-
-		Property<Boolean> sortRows = mock(Property.class);
-		when(sortRows.isPresent()).thenReturn(true);
-		when(sortRows.get()).thenReturn(true);
-		when(task.getSortRows()).thenReturn(sortRows);
+		when(parameters.getSkipEmpty()).thenReturn(skipEmpty);
 
 		Property<Integer> release = mock(Property.class);
 		when(release.isPresent()).thenReturn(true);
 		when(release.get()).thenReturn(17);
-		when(task.getRelease()).thenReturn(release);
+		when(parameters.getRelease()).thenReturn(release);
 
 		Property<String> strategy = mock(Property.class);
 		when(strategy.isPresent()).thenReturn(true);
 		when(strategy.get()).thenReturn("ParentFirst");
-		when(task.getStrategy()).thenReturn(strategy);
-
-		Property<Boolean> removeVersion = mock(Property.class);
-		when(removeVersion.isPresent()).thenReturn(true);
-		when(removeVersion.get()).thenReturn(true);
-		when(task.getRemoveVersion()).thenReturn(removeVersion);
-
-		Property<Boolean> useArtifactName = mock(Property.class);
-		when(useArtifactName.isPresent()).thenReturn(true);
-		when(useArtifactName.get()).thenReturn(true);
-		when(task.getUseArtifactName()).thenReturn(useArtifactName);
+		when(parameters.getStrategy()).thenReturn(strategy);
 
 		Property<Boolean> ignoreMissingAnnotations = mock(Property.class);
 		when(ignoreMissingAnnotations.isPresent()).thenReturn(true);
 		when(ignoreMissingAnnotations.get()).thenReturn(true);
-		when(task.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
+		when(parameters.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
 
-		Property<Boolean> ignoreExactCopt = mock(Property.class);
-		when(ignoreExactCopt.isPresent()).thenReturn(true);
-		when(ignoreExactCopt.get()).thenReturn(true);
-		when(task.getIgnoreExactCopy()).thenReturn(ignoreExactCopt);
+		Property<Boolean> ignoreExactCopy = mock(Property.class);
+		when(ignoreExactCopy.isPresent()).thenReturn(true);
+		when(ignoreExactCopy.get()).thenReturn(true);
+		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopy);
 
 		Directory directory = mock(Directory.class);
 		when(directory.getAsFile()).thenReturn(new File("/jarhc/data"));
 		DirectoryProperty dataDir = mock(DirectoryProperty.class);
 		when(dataDir.isPresent()).thenReturn(true);
 		when(dataDir.get()).thenReturn(directory);
-		when(task.getDataDir()).thenReturn(dataDir);
+		when(parameters.getDataDir()).thenReturn(dataDir);
 
 		Property<String> reportTitle = mock(Property.class);
 		when(reportTitle.isPresent()).thenReturn(true);
 		when(reportTitle.get()).thenReturn("JarHC Test Report");
-		when(task.getReportTitle()).thenReturn(reportTitle);
+		when(parameters.getReportTitle()).thenReturn(reportTitle);
 
 		ConfigurableFileCollection reportFiles = mock(ConfigurableFileCollection.class);
+		when(reportFiles.isEmpty()).thenReturn(false);
 		when(reportFiles.iterator()).thenReturn(List.of(new File("/jarhc/report.html"), new File("/jarhc/report.txt")).iterator());
-		when(task.getReportFiles()).thenReturn(reportFiles);
-
-		when(task.createOptions(logger)).thenCallRealMethod();
+		when(parameters.getReportFiles()).thenReturn(reportFiles);
 
 		// test
-		Options options = task.createOptions(logger);
+		Options options = JarhcRunner.createOptions(parameters, mock(Logger.class));
 
 		// assert
 		assertNotNull(options);
