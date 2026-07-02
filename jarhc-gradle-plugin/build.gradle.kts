@@ -272,7 +272,13 @@ tasks.sonar {
 // helper functions ------------------------------------------------------------
 
 fun getGitBranchName(): String {
-    val head = rootDir.resolve(".git/HEAD")
+    var gitDir = rootDir.resolve(".git")
+    // In worktrees and submodules, .git is a file: "gitdir: <path>"
+    if (gitDir.isFile) {
+        val gitdir = gitDir.readText(Charsets.UTF_8).trim().removePrefix("gitdir: ")
+        gitDir = rootDir.resolve(gitdir)
+    }
+    val head = gitDir.resolve("HEAD")
     if (head.isFile) {
         val content = head.readText(Charsets.UTF_8).trim()
         return content.removePrefix("ref: refs/heads/")
