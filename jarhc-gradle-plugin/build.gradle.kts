@@ -27,9 +27,6 @@ plugins {
 
     // run Sonar analysis
     alias(libs.plugins.sonarqube)
-
-    // get current Git branch name
-    alias(libs.plugins.grgit)
 }
 
 // Preconditions based on which tasks should be executed -----------------------
@@ -275,5 +272,10 @@ tasks.sonar {
 // helper functions ------------------------------------------------------------
 
 fun getGitBranchName(): String {
-    return grgit.branch.current().name
+    val head = rootDir.resolve(".git/HEAD")
+    if (head.isFile) {
+        val content = head.readText(Charsets.UTF_8).trim()
+        return content.removePrefix("ref: refs/heads/")
+    }
+    throw GradleException("Git branch name not found.")
 }
