@@ -17,6 +17,7 @@ package org.jarhc.gradle;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Consumer;
 import org.gradle.api.GradleException;
 import org.gradle.api.file.FileCollection;
 import org.jarhc.app.Application;
@@ -65,30 +66,9 @@ final class JarhcRunner {
 
 		Options options = new Options();
 
-		FileCollection classpath = parameters.getClasspath();
-		logger.info("Classpath:");
-		for (File file : classpath) {
-			options.addClasspathJarPath(file.getAbsolutePath());
-			logger.info("- {}", logger.isDebugEnabled() ? file.getAbsolutePath() : file.getName());
-		}
-
-		FileCollection provided = parameters.getProvided();
-		if (provided != null && !provided.isEmpty()) {
-			logger.info("Provided:");
-			for (File file : provided) {
-				options.addProvidedJarPath(file.getAbsolutePath());
-				logger.info("- {}", logger.isDebugEnabled() ? file.getAbsolutePath() : file.getName());
-			}
-		}
-
-		FileCollection runtime = parameters.getRuntime();
-		if (runtime != null && !runtime.isEmpty()) {
-			logger.info("Runtime:");
-			for (File file : runtime) {
-				options.addRuntimeJarPath(file.getAbsolutePath());
-				logger.info("- {}", logger.isDebugEnabled() ? file.getAbsolutePath() : file.getName());
-			}
-		}
+		logAndAddJars(parameters.getClasspath(), "Classpath", options::addClasspathJarPath, logger);
+		logAndAddJars(parameters.getProvided(), "Provided", options::addProvidedJarPath, logger);
+		logAndAddJars(parameters.getRuntime(), "Runtime", options::addRuntimeJarPath, logger);
 
 		if (parameters.getSections().isPresent() && !parameters.getSections().get().isEmpty()) {
 			List<String> sections = parameters.getSections().get();
@@ -140,16 +120,27 @@ final class JarhcRunner {
 			options.setReportTitle(reportTitle);
 		}
 
-		FileCollection reportFiles = parameters.getReportFiles();
-		if (reportFiles != null && !reportFiles.isEmpty()) {
-			for (File reportFile : reportFiles) {
-				String path = reportFile.getAbsolutePath();
-				logger.info("Report file: {}", path);
-				options.addReportFile(path);
-			}
-		}
+		addReportFiles(options, parameters.getReportFiles(), logger);
 
 		return options;
+	}
+
+	private static void logAndAddJars(FileCollection files, String label, Consumer<String> add, Logger logger) {
+		if (files == null || files.isEmpty()) return;
+		logger.info("{}:", label);
+		for (File file : files) {
+			add.accept(file.getAbsolutePath());
+			logger.info("- {}", logger.isDebugEnabled() ? file.getAbsolutePath() : file.getName());
+		}
+	}
+
+	private static void addReportFiles(Options options, FileCollection reportFiles, Logger logger) {
+		if (reportFiles == null || reportFiles.isEmpty()) return;
+		for (File reportFile : reportFiles) {
+			String path = reportFile.getAbsolutePath();
+			logger.info("Report file: {}", path);
+			options.addReportFile(path);
+		}
 	}
 
 	// visible for testing
