@@ -92,6 +92,8 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@Inject
 	public abstract WorkerExecutor getWorkerExecutor();
 
+	// Gradle instantiates task types via dependency injection and requires a public
+	// (or @Inject-annotated) constructor, so this cannot be reduced to protected.
 	public JarhcReportTask() {
 		setGroup("verification");
 		setDescription("Generates a JarHC report.");
