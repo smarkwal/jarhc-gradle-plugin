@@ -57,6 +57,17 @@ class JarhcReportTaskTest {
 		when(task.getRemoveVersion()).thenReturn(mock(Property.class));
 		when(task.getUseArtifactName()).thenReturn(mock(Property.class));
 
+		// prepare: task inputs, stubbed to distinct mocks so the wiring onto the
+		// work parameters can be verified by instance
+		ConfigurableFileCollection taskClasspath = mock(ConfigurableFileCollection.class);
+		ConfigurableFileCollection taskProvided = mock(ConfigurableFileCollection.class);
+		ConfigurableFileCollection taskRuntime = mock(ConfigurableFileCollection.class);
+		ConfigurableFileCollection taskReportFiles = mock(ConfigurableFileCollection.class);
+		when(task.getClasspath()).thenReturn(taskClasspath);
+		when(task.getProvided()).thenReturn(taskProvided);
+		when(task.getRuntime()).thenReturn(taskRuntime);
+		when(task.getReportFiles()).thenReturn(taskReportFiles);
+
 		// prepare: worker executor
 		WorkerExecutor workerExecutor = mock(WorkerExecutor.class);
 		WorkQueue workQueue = mock(WorkQueue.class);
@@ -79,10 +90,11 @@ class JarhcReportTaskTest {
 		JarhcWorkParameters parameters = mockWorkParameters();
 		action.getValue().execute(parameters);
 
-		verify(parameters.getClasspath()).from(any());
-		verify(parameters.getProvided()).from(any());
-		verify(parameters.getRuntime()).from(any());
-		verify(parameters.getReportFiles()).from(any());
+		// verify: each task input is wired onto the matching work parameter
+		verify(parameters.getClasspath()).from(taskClasspath);
+		verify(parameters.getProvided()).from(taskProvided);
+		verify(parameters.getRuntime()).from(taskRuntime);
+		verify(parameters.getReportFiles()).from(taskReportFiles);
 	}
 
 	@Test
