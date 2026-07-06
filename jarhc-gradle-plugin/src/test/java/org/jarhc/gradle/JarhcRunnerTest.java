@@ -123,7 +123,7 @@ class JarhcRunnerTest {
 
 		// assert
 		assertNotNull(options);
-		assertEquals(List.of("/jarhc/a.jar"), options.getClasspathJarPaths());
+		assertEquals(List.of(absPath("/jarhc/a.jar")), options.getClasspathJarPaths());
 		assertEquals(List.of(), options.getProvidedJarPaths());
 		assertEquals(List.of(), options.getRuntimeJarPaths());
 		assertNull(options.getSections());
@@ -133,7 +133,7 @@ class JarhcRunnerTest {
 		assertEquals(ClassLoaderStrategy.ParentLast, options.getClassLoaderStrategy());
 		assertFalse(options.isIgnoreMissingAnnotations());
 		assertFalse(options.isIgnoreExactCopy());
-		assertEquals("/jarhc/data", options.getDataPath());
+		assertEquals(absPath("/jarhc/data"), options.getDataPath());
 		assertEquals("JAR Health Check Report", options.getReportTitle());
 		assertEquals(List.of(), options.getReportFiles());
 	}
@@ -210,18 +210,18 @@ class JarhcRunnerTest {
 
 		// assert
 		assertNotNull(options);
-		assertEquals(List.of("/jarhc/a.jar"), options.getClasspathJarPaths());
-		assertEquals(List.of("/jarhc/b.jar"), options.getProvidedJarPaths());
-		assertEquals(List.of("/jarhc/c.jar"), options.getRuntimeJarPaths());
+		assertEquals(List.of(absPath("/jarhc/a.jar")), options.getClasspathJarPaths());
+		assertEquals(List.of(absPath("/jarhc/b.jar")), options.getProvidedJarPaths());
+		assertEquals(List.of(absPath("/jarhc/c.jar")), options.getRuntimeJarPaths());
 		assertEquals(List.of("jf", "bl"), options.getSections());
 		assertTrue(options.isSkipEmpty());
 		assertEquals(17, options.getRelease());
 		assertEquals(ClassLoaderStrategy.ParentFirst, options.getClassLoaderStrategy());
 		assertTrue(options.isIgnoreMissingAnnotations());
 		assertTrue(options.isIgnoreExactCopy());
-		assertEquals("/jarhc/data", options.getDataPath());
+		assertEquals(absPath("/jarhc/data"), options.getDataPath());
 		assertEquals("JarHC Test Report", options.getReportTitle());
-		assertEquals(List.of("/jarhc/report.html", "/jarhc/report.txt"), options.getReportFiles());
+		assertEquals(List.of(absPath("/jarhc/report.html"), absPath("/jarhc/report.txt")), options.getReportFiles());
 	}
 
 	@Test
@@ -285,8 +285,8 @@ class JarhcRunnerTest {
 		Options options = JarhcRunner.createOptions(parameters, logger);
 
 		// assert: in debug mode the absolute path is logged instead of the file name
-		assertEquals(List.of("/jarhc/a.jar"), options.getClasspathJarPaths());
-		verify(logger).info("- {}", "/jarhc/a.jar");
+		assertEquals(List.of(absPath("/jarhc/a.jar")), options.getClasspathJarPaths());
+		verify(logger).info("- {}", absPath("/jarhc/a.jar"));
 	}
 
 	@Test
@@ -315,6 +315,13 @@ class JarhcRunnerTest {
 		GradleException exception = assertThrows(GradleException.class,
 				() -> JarhcRunner.runJarHC(options, mock(Logger.class)));
 		assertTrue(exception.getMessage().startsWith("Failed to create directory:"));
+	}
+
+	// the platform-specific absolute path for the given path, matching the
+	// File.getAbsolutePath() transformation the production code applies, so the
+	// assertions stay portable (e.g. on Windows development machines)
+	private static String absPath(String path) {
+		return new File(path).getAbsolutePath();
 	}
 
 	// a JarhcWorkParameters mock configured like createOptions_withDefaultConfig:
