@@ -97,6 +97,15 @@ git tag v3.1.0
 
 ## 4. Publish to the Gradle Plugin Portal
 
+First validate the publication without releasing it (checks signing, credentials,
+and the publication metadata):
+
+```shell
+./gradlew publishPlugins --validate-only
+```
+
+If validation passes, publish for real:
+
 ```shell
 ./gradlew publishPlugins
 ```
@@ -113,24 +122,28 @@ git push origin v3.1.0
 
 ## 5. Create the GitHub release (draft)
 
-Create a draft release with auto-generated notes, then review and publish it in
-the UI:
+Write the release notes by hand in the same terse style as previous releases
+(short `* Change:` / `* Feature:` bullets, user-facing changes only).
+
+Review the previous notes for the style, and the commits for the content:
 
 ```shell
-gh release create v3.1.0 --draft --generate-notes --notes-start-tag v1.2.0 --title "v3.1.0"
-```
-
-Review, edit, and publish the draft here:
-
-https://github.com/smarkwal/jarhc-gradle-plugin/releases
-
-To review the commits since the last release manually:
-
-```shell
+gh release view v1.2.0 --json body --jq .body
 git log --oneline v1.2.0..v3.1.0
 ```
 
-## 6. Smoke test the published plugin
+Write the notes to a file, then create the draft release from it:
+
+```shell
+gh release create v3.1.0 --draft --title "v3.1.0" --notes-file release-notes.md
+```
+
+Review and edit the draft in the UI, and leave it as a draft until the smoke test
+in step 6 passes:
+
+https://github.com/smarkwal/jarhc-gradle-plugin/releases
+
+## 6. Smoke test the published plugin, then publish the release
 
 In a throwaway project, apply the plugin from the portal and run the task to
 confirm the artifact resolves and works:
@@ -143,6 +156,15 @@ plugins {
 
 ```shell
 ./gradlew jarhcReport
+```
+
+Check the task output for unexpected warnings or errors, not just that the build
+succeeds.
+
+Once the smoke test passes, publish the draft release:
+
+```shell
+gh release edit v3.1.0 --draft=false
 ```
 
 ## 7. Set the next snapshot version (via pull request)
