@@ -7,6 +7,7 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 
 - Pushes to `main` are blocked by GitHub.
 - All changes go through a branch and a pull request.
+- Never force-push. Update a branch only by adding new commits, including to correct an earlier commit.
 - GitHub Copilot reviews every pull request.
 
 ## Project layout
@@ -48,6 +49,8 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 - `./gradlew build` — compile, unit tests, functional tests, plugin validation.
 - Requires Java 17 to run Gradle.
 - `:sonar` runs automatically on CI; run it locally (with a Sonar token in your Gradle settings) only for a reason such as a Sonar plugin update, a Sonar config change, or checking Sonar compatibility with a new Java or Gradle version.
+- Read the SonarCloud quality gate: `curl -s "https://sonarcloud.io/api/qualitygates/project_status?projectKey=smarkwal_jarhc-gradle-plugin&branch=main"`.
+- For detailed metrics, use `curl -s "https://sonarcloud.io/api/measures/component?component=smarkwal_jarhc-gradle-plugin&branch=main&metricKeys=coverage,tests,bugs,vulnerabilities,code_smells"`.
 
 ## Categories
 
@@ -59,6 +62,7 @@ Shared terms, used both as commit message prefixes and as branch name categories
 - `code` — refactor existing code
 - `docs` — update documentation
 - `ci` — continuous integration, such as GitHub Actions workflows
+- `release` — release activities
 - `hotfix` — urgent fix
 
 ## Commit messages
