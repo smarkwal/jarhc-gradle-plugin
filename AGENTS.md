@@ -9,6 +9,7 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 - All changes go through a branch and a pull request.
 - Never force-push. Update a branch only by adding new commits, including to correct an earlier commit.
 - GitHub Copilot reviews every pull request.
+- SonarCloud analyzes every pull request and decorates it with findings.
 
 ## Project layout
 
@@ -87,3 +88,11 @@ Shared terms, used both as commit message prefixes and as branch name categories
 - Review each comment, plus any "comments suppressed due to low confidence" note, and decide whether it is worth fixing or a false positive.
 - Propose how a fix would look and wait for the user's approval before changing anything.
 - Once approved: apply the fix, run the build to test it, commit and push, then reply to the comment and mark the thread resolved.
+
+## Handling SonarCloud findings
+
+- Do not apply SonarCloud's findings automatically.
+- Review each finding and decide whether it is worth fixing or a false positive.
+- The details (rule, file, line, message) can be read from the SonarCloud API or the pull request annotations.
+- Propose how a fix would look and wait for the user's approval before changing anything.
+- Once approved: apply the fix, run the build to test it, then commit and push.

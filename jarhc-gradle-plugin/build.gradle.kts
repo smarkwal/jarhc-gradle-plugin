@@ -236,16 +236,23 @@ sonar {
         property("sonar.organization", "smarkwal")
         property("sonar.projectKey", "smarkwal_jarhc-gradle-plugin")
 
-        // Git branch
-        val sonarBranchName = getGitBranchName()
-        property("sonar.branch.name", sonarBranchName)
+        // In pull request analysis mode the build workflow passes the
+        // sonar.pullrequest.* properties on the command line. Branch properties
+        // must not be set in that case: SonarScanner rejects mixing branch and
+        // pull request analysis.
+        if (System.getProperty("sonar.pullrequest.key") == null) {
 
-        // target Git branch for merge
-        if (sonarBranchName != "main") {
-            // https://docs.sonarsource.com/sonarqube-cloud/enriching/branch-analysis-setup/
-            property("sonar.branch.target", "main")
-            // https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/analysis-parameters/
-            property("sonar.newCode.referenceBranch", "main")
+            // Git branch
+            val sonarBranchName = getGitBranchName()
+            property("sonar.branch.name", sonarBranchName)
+
+            // target Git branch for merge
+            if (sonarBranchName != "main") {
+                // https://docs.sonarsource.com/sonarqube-cloud/enriching/branch-analysis-setup/
+                property("sonar.branch.target", "main")
+                // https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/analysis-parameters/
+                property("sonar.newCode.referenceBranch", "main")
+            }
         }
 
         // paths to test sources and test classes
