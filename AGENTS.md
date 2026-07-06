@@ -7,6 +7,7 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 
 - Pushes to `main` are blocked by GitHub.
 - All changes go through a branch and a pull request.
+- Never force-push. Update a branch only by adding new commits, including to correct an earlier commit.
 - GitHub Copilot reviews every pull request.
 
 ## Project layout
