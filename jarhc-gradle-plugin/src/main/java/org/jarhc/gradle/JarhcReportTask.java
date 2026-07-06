@@ -92,6 +92,9 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@Inject
 	public abstract WorkerExecutor getWorkerExecutor();
 
+	// Sonar suggests making this constructor protected, but Gradle can only instantiate task types via a
+	// public no-arg constructor or a constructor annotated with @Inject (public or protected).
+	// Keeping it public avoids TaskInstantiationException during task creation.
 	public JarhcReportTask() {
 		setGroup("verification");
 		setDescription("Generates a JarHC report.");
