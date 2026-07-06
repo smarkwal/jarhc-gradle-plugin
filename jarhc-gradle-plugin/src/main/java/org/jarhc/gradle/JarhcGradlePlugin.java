@@ -97,11 +97,11 @@ public class JarhcGradlePlugin implements Plugin<Project> {
 		// set explicitly, so configuration on the task is never overwritten
 		task.getSections().empty();
 		task.getSkipEmpty().set(false);
-		task.getSortRows().set(false);
+		// deprecated options (sortRows, removeVersion, useArtifactName) are left unset
+		// on purpose: a value would make isPresent() true and trigger a spurious
+		// deprecation warning even though the user never configured the option
 		task.getRelease().set(-1);
 		task.getStrategy().set("ParentLast");
-		task.getRemoveVersion().set(false);
-		task.getUseArtifactName().set(false);
 		task.getIgnoreMissingAnnotations().set(false);
 		task.getIgnoreExactCopy().set(false);
 		task.getDataDir().set(dataDir);

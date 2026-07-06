@@ -59,7 +59,10 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@Input
 	public abstract Property<Boolean> getSkipEmpty();
 
-	@Input
+	// Deprecated and ignored. @Internal (not @Input) so it needs no default value
+	// and isPresent() is true only when the user explicitly sets it, which triggers
+	// a deprecation warning in run().
+	@Internal
 	public abstract Property<Boolean> getSortRows();
 
 	@Input
@@ -68,10 +71,12 @@ public abstract class JarhcReportTask extends DefaultTask {
 	@Input
 	public abstract Property<String> getStrategy();
 
-	@Input
+	// Deprecated and ignored (see getSortRows).
+	@Internal
 	public abstract Property<Boolean> getRemoveVersion();
 
-	@Input
+	// Deprecated and ignored (see getSortRows).
+	@Internal
 	public abstract Property<Boolean> getUseArtifactName();
 
 	@Input

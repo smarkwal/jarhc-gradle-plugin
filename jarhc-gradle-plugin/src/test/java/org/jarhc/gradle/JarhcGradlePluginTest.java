@@ -16,6 +16,7 @@
 package org.jarhc.gradle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -69,6 +70,24 @@ class JarhcGradlePluginTest {
 		// assert: the task classpath defaults to the project's runtime classpath
 		FileCollection runtimeClasspath = project.getConfigurations().getByName("runtimeClasspath");
 		assertEquals(runtimeClasspath.getFiles(), task.getClasspath().getFiles());
+	}
+
+	@Test
+	void apply_leavesDeprecatedOptionsUnset() {
+
+		// prepare
+		Project project = ProjectBuilder.builder().build();
+		project.getPlugins().apply("org.jarhc");
+
+		// test: realize the task, which runs the default configuration
+		JarhcReportTask task = (JarhcReportTask) project.getTasks().getByName("jarhcReport");
+
+		// assert: the deprecated options are left unset by the default configuration,
+		// so run() does not log a spurious deprecation warning when the user never
+		// configured them
+		assertFalse(task.getSortRows().isPresent());
+		assertFalse(task.getRemoveVersion().isPresent());
+		assertFalse(task.getUseArtifactName().isPresent());
 	}
 
 }

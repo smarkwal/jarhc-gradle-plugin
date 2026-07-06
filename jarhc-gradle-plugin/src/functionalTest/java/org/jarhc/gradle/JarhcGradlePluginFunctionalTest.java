@@ -16,6 +16,7 @@
 package org.jarhc.gradle;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
@@ -75,6 +76,8 @@ class JarhcGradlePluginFunctionalTest {
 		// assert
 		String output = result.getOutput();
 		assertTrue(output.contains(expectedOutput));
+		// the default configuration sets no deprecated option, so none is reported
+		assertFalse(output.contains("has been deprecated and is ignored"));
 		assertTrue(Files.isDirectory(expectedDataPath));
 		assertTrue(Files.isRegularFile(expectedHtmlReportPath));
 		assertTrue(Files.isRegularFile(expectedTextReportPath));
@@ -107,6 +110,10 @@ class JarhcGradlePluginFunctionalTest {
 		// assert
 		String output = result.getOutput();
 		assertTrue(output.contains(expectedOutput));
+		// the full configuration sets all three deprecated options, so each is reported
+		assertTrue(output.contains("Option 'sortRows' has been deprecated and is ignored."));
+		assertTrue(output.contains("Option 'removeVersion' has been deprecated and is ignored."));
+		assertTrue(output.contains("Option 'useArtifactName' has been deprecated and is ignored."));
 		assertTrue(Files.isDirectory(expectedDataPath));
 		assertTrue(Files.isRegularFile(expectedHtmlReportPath));
 		assertTrue(Files.isRegularFile(expectedTextReportPath));
