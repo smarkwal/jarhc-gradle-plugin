@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import java.util.*
 
 plugins {
     idea
@@ -67,16 +66,6 @@ allprojects {
     // lock all dependency configurations in every project ---------------------
     dependencyLocking {
         lockAllConfigurations()
-    }
-
-    // load user-specific properties -------------------------------------------
-    val userPropertiesFile = file("${rootDir}/gradle.user.properties")
-    if (userPropertiesFile.exists()) {
-        val userProperties = Properties()
-        userProperties.load(userPropertiesFile.inputStream())
-        userProperties.forEach {
-            project.ext.set(it.key.toString(), it.value)
-        }
     }
 
     repositories {

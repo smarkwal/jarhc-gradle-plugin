@@ -10,7 +10,6 @@
 build/
 
 # user-specific files
-gradle.user.properties
 *.gpg
 
 # macOS files

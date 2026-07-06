@@ -80,7 +80,7 @@ gradlePlugin {
 
 // flag to skip unit and integration tests
 // command line option: -Pskip.tests
-val skipTests: Boolean = project.hasProperty("skip.tests")
+val skipTests = providers.gradleProperty("skip.tests").isPresent
 
 // Java ------------------------------------------------------------------------
 
@@ -147,13 +147,13 @@ gradlePlugin.testSourceSets(functionalTestSourceSet)
 // 'jarhc.*' Gradle properties to pass as system properties to the JUnit JVM
 val jarhcProperties = providers.gradlePropertiesPrefixedBy("jarhc.")
 
-tasks.withType(Test::class) {
+tasks.withType<Test>().configureEach {
 
     // run tests on Java 17 (Gradle 9 test fixtures require Java 17)
     javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(17)) })
 
     // skip tests if property "skip.tests" is set
-    onlyIf { !skipTests }
+    if (skipTests) enabled = false
 
     // use JUnit
     useJUnitPlatform()
