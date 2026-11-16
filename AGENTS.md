@@ -22,7 +22,7 @@ short bullet lists of facts, minimal prose. Preserve this style when editing it.
 - Plugin bytecode: Java 11.
 - Main sources: Java 17 toolchain, `--release 11` (Java 11 cannot read Gradle 9's Java 17 worker API classes).
 - Tests run on: Java 17 (Gradle 9 TestKit requires it).
-- Gradle wrapper: 9.6.1 (requires Java 17 to run).
+- Gradle wrapper: 9.9.1 (requires Java 17 to run).
 - Minimum supported Gradle: 8.8 (`MINIMUM_GRADLE_VERSION` in `JarhcGradlePlugin`).
 
 ## Compatibility (enforced by the functional tests)
