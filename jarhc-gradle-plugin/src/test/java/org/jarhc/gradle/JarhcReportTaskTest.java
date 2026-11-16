@@ -53,9 +53,12 @@ class JarhcReportTaskTest {
 		when(task.getLogger()).thenReturn(logger);
 
 		// the deprecated options are queried before submitting the work
-		when(task.getSortRows()).thenReturn(mock(Property.class));
-		when(task.getRemoveVersion()).thenReturn(mock(Property.class));
-		when(task.getUseArtifactName()).thenReturn(mock(Property.class));
+		Property<Boolean> sortRows = mock(Property.class);
+		Property<Boolean> removeVersion = mock(Property.class);
+		Property<Boolean> useArtifactName = mock(Property.class);
+		when(task.getSortRows()).thenReturn(sortRows);
+		when(task.getRemoveVersion()).thenReturn(removeVersion);
+		when(task.getUseArtifactName()).thenReturn(useArtifactName);
 
 		// prepare: task inputs, stubbed to distinct mocks so the wiring onto the
 		// work parameters can be verified by instance
@@ -131,18 +134,30 @@ class JarhcReportTaskTest {
 	// parameter-configuration action can be executed against it
 	private static JarhcWorkParameters mockWorkParameters() {
 		JarhcWorkParameters parameters = mock(JarhcWorkParameters.class);
-		when(parameters.getClasspath()).thenReturn(mock(ConfigurableFileCollection.class));
-		when(parameters.getProvided()).thenReturn(mock(ConfigurableFileCollection.class));
-		when(parameters.getRuntime()).thenReturn(mock(ConfigurableFileCollection.class));
-		when(parameters.getSections()).thenReturn(mock(ListProperty.class));
-		when(parameters.getSkipEmpty()).thenReturn(mock(Property.class));
-		when(parameters.getRelease()).thenReturn(mock(Property.class));
-		when(parameters.getStrategy()).thenReturn(mock(Property.class));
-		when(parameters.getIgnoreMissingAnnotations()).thenReturn(mock(Property.class));
-		when(parameters.getIgnoreExactCopy()).thenReturn(mock(Property.class));
-		when(parameters.getDataDir()).thenReturn(mock(DirectoryProperty.class));
-		when(parameters.getReportTitle()).thenReturn(mock(Property.class));
-		when(parameters.getReportFiles()).thenReturn(mock(ConfigurableFileCollection.class));
+		ConfigurableFileCollection classpath = mock(ConfigurableFileCollection.class);
+		ConfigurableFileCollection provided = mock(ConfigurableFileCollection.class);
+		ConfigurableFileCollection runtime = mock(ConfigurableFileCollection.class);
+		ListProperty<String> sections = mock(ListProperty.class);
+		Property<Boolean> skipEmpty = mock(Property.class);
+		Property<Integer> release = mock(Property.class);
+		Property<String> strategy = mock(Property.class);
+		Property<Boolean> ignoreMissingAnnotations = mock(Property.class);
+		Property<Boolean> ignoreExactCopy = mock(Property.class);
+		DirectoryProperty dataDir = mock(DirectoryProperty.class);
+		Property<String> reportTitle = mock(Property.class);
+		ConfigurableFileCollection reportFiles = mock(ConfigurableFileCollection.class);
+		when(parameters.getClasspath()).thenReturn(classpath);
+		when(parameters.getProvided()).thenReturn(provided);
+		when(parameters.getRuntime()).thenReturn(runtime);
+		when(parameters.getSections()).thenReturn(sections);
+		when(parameters.getSkipEmpty()).thenReturn(skipEmpty);
+		when(parameters.getRelease()).thenReturn(release);
+		when(parameters.getStrategy()).thenReturn(strategy);
+		when(parameters.getIgnoreMissingAnnotations()).thenReturn(ignoreMissingAnnotations);
+		when(parameters.getIgnoreExactCopy()).thenReturn(ignoreExactCopy);
+		when(parameters.getDataDir()).thenReturn(dataDir);
+		when(parameters.getReportTitle()).thenReturn(reportTitle);
+		when(parameters.getReportFiles()).thenReturn(reportFiles);
 		return parameters;
 	}
 
